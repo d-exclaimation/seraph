@@ -1,46 +1,48 @@
-<div align="center">
-    <p align="center">
-      <img width="125" src="./seraph-icon.png"/>
-    </p>
-    <h1><code>seraph</code></h1>
-    <h6>A simple, lightweight, and fast web framework for building web applications</h6>
-
-</div>
-
 <br/>
+<p align="center">
+  <img height="125" src="./seraph-banner.png"/>
+</p>
+<br/>
+
+<h1 align="center">Hassle-free web apps, in an instant</h1>
+
+Seraph offers the fastest and simplest way to build web apps - regardless of the complexity of your website. Seraph is hassle-free because it can be used with or without any build tools, integrates with any server-side rendering framework, and allows fully interactive sites using partial hydration.
+
+All features of Seraph are built with simplicity in mind and built on top of the web platform, so it does not completely abstract away the web platform, and you can incrementally adopt Seraph into your existing projects.
 
 ## Getting started
 
 ### Install
 
-```bash
-npm install @d-exclaimation/seraph
+```sh
+npm create @d-exclaimation/seraph
+# or
+pnpm create @d-exclaimation/seraph
+# or
+yarn create @d-exclaimation/seraph
 ```
 
-### Import through CDN
+### Use a CDN
 
 ```html
 <script type="module">
-  import { sr } from "https://cdn.jsdelivr.net/npm/@d-exclaimation/seraph/+esm";
+  import { sr } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
 
-  // Your code here
+  const App = sr.div({
+    c: "Hello World!",
+  });
+
+  sr.mount(App, document.getElementById("app"));
 </script>
 ```
+
+## Resources
+
+- [Docs](https://qwik.builder.io/)
 
 ## Concepts
 
 ### States
-
-<details>
-
-<summary>
-  <small>What is a state?</small>
-</summary>
-
-> States are the core concept of Seraph. States are the representation of the current state of the application. States are immutable, meaning that they cannot be changed. Instead, a new state is created when a state is updated. This is done to ensure that the application is predictable and easy to debug.
-
-</details>
-
 
 ```ts
 import { sr } from "@d-exclaimation/seraph";
@@ -75,17 +77,6 @@ $user.subscribe((state) => {
 
 ### UI Components
 
-<details>
-<summary>
-  <small>What is a UI component?</small>
-</summary>
-
-> UI components are the building blocks of Seraph. UI components are the representation of the UI of the application. Seraph UI components are just plain HTML DOM Elements. This means that you can use any HTML DOM Element as a UI component. 
-
-> The only difference is that Seraph UI components can be reactive (using `sr.use`), meaning that they can update their UI when the state changes.
-
-</details>
-
 ```ts
 import { sr, mount } from "@d-exclaimation/seraph";
 
@@ -115,17 +106,6 @@ sr.mount(App, document.getElementById("app"));
 ```
 
 ### Hydration
-
-<details>
-<summary>
-  <small>What is hydration?</small>
-</summary>
-
-> Hydration is the process of making a rendered HTML DOM element(s) into interactive UI components.
-
-> In Seraph, hydration is done by calling the `sr.hydrate` function. This function takes a HTML DOM Element as a target for hydration, and render a hydrated UI component. This will also fetch any inherited rendered data from the server as long that data is stored in the target HTML DOM Element's `data-seraph-ssr` attribute.
-
-</details>
 
 ```html
 <div id="app" data-seraph-ssr='{ "count": 10 }'>
