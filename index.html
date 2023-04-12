@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seraph Playground</title>
+  </head>
+  <body
+    class="bg-slate-50 min-w-[100vw] min-h-[100vh] flex items-center justify-center"
+  >
+    <div id="counter-app" data-seraph-ssr='{ "sports": [] }'>
+      <div
+        class="flex flex-col max-w-xl w-[90vw] h-96 items-center justify-center rounded-md shadow-md"
+      >
+        <div class="flex flex-wrap w-full">
+          <h1 class="text-5xl text-black/50">None</h1>
+        </div>
+        <div class="flex items-center justify-center flex-row gap-2 mt-3">
+          <button
+            class="rounded-xl px-6 py-2 text-red-700 bg-red-100 active:bg-red-200"
+          >
+            -
+          </button>
+          <button
+            class="rounded-xl px-6 py-2 text-emerald-700 bg-emerald-100 active:bg-emerald-200"
+          >
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
