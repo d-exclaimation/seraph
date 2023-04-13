@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Docs generated files
+
+docs/.vitepress/cache
+docs/.vitepress/dist
