@@ -1,8 +1,7 @@
 <br/>
 <p align="center">
-  <img height="125" src="./seraph-banner.png"/>
+  <img height="150" src="./docs/public/seraph.png"/>
 </p>
-<br/>
 
 <h1 align="center">Hassle-free web apps, in an instant</h1>
 
