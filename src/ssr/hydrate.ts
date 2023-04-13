@@ -15,7 +15,7 @@ type HydrateArgs<P> = {
 };
 
 /**
- * Hydrate a component into a parent element with props loaded from the data attribute.
+ * Hydrate a component into a parent element with props loaded from the `sr-props` attribute.
  * @param into The parent element.
  * @param with The component.
  * @param using The parser function.
