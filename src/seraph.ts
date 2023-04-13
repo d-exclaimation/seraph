@@ -5,9 +5,9 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { hydrate, load } from "./ssr";
+import { load, resource } from "./ssr";
 import { all, effect, from, memo, query, state, zip } from "./state";
-import { cont, html, mount, render, use } from "./ui";
+import { html, hydrate, mount, render, use } from "./ui";
 
 const std = {
   state,
@@ -16,13 +16,13 @@ const std = {
   memo,
   from,
   query,
-  hydrate,
-  load,
   mount,
   use,
   render,
   effect,
-  cont,
+  hydrate,
+  load,
+  resource,
 } as const;
 
 export const sr = new Proxy({} as typeof html & typeof std, {
@@ -33,13 +33,13 @@ export const sr = new Proxy({} as typeof html & typeof std, {
     if (key === "memo") return memo;
     if (key === "from") return from;
     if (key === "query") return query;
-    if (key === "hydrate") return hydrate;
     if (key === "load") return load;
     if (key === "mount") return mount;
     if (key === "use") return use;
     if (key === "render") return render;
     if (key === "effect") return effect;
-    if (key === "cont") return cont;
+    if (key === "hydrate") return hydrate;
+    if (key === "resource") return resource;
 
     return html[key];
   },
