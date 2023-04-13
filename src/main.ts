@@ -83,46 +83,55 @@ const SPORTS = [
   "North Korean Basketball",
 ];
 
-const Tag = (props: { sport: string; click: () => void }) => {
+type TagProps = {
+  sport: string;
+  click: () => void;
+};
+
+const Tag = ({ sport, click }: TagProps) => {
   return sr.span({
     classes: "text-sm font-normal px-3 py-1 rounded-full text-black bg-sky-100",
     c: [
-      props.sport,
+      sport,
       sr.button({
         classes: "ml-1 text-sm",
         c: "✕",
-        on: {
-          click: props.click,
-        },
+        on: { click },
       }),
     ],
   });
 };
 
-const Dropdown = (props: { to: HTMLElement; c?: DefaultProps["c"] }) => {
+type DropdownProps = {
+  to: HTMLElement;
+  c?: DefaultProps["c"];
+};
+
+const Dropdown = ({ to, c }: DropdownProps) => {
   return sr.div({
     classes: "flex flex-col w-full items-center justify-start",
     c: [
-      props.to,
+      to,
       sr.div({
         classes: "flex flex-col w-full",
-        c: props.c,
+        c,
       }),
     ],
   });
 };
 
-const RecommendedSports = (props: {
+type RecommendedSportsProps = {
   bind: {
     $sports: State<Set<string>>;
     $search: State<string>;
   };
   click: (sport: string) => void;
-}) => {
-  const {
-    bind: { $sports, $search },
-    click,
-  } = props;
+};
+
+const RecommendedSports = ({
+  bind: { $search, $sports },
+  click,
+}: RecommendedSportsProps) => {
   const $recommended = sr.from(sr.zip($sports, $search), ([sports, search]) => {
     if (search.trim().length < 3) return undefined;
     return SPORTS.filter(
@@ -136,31 +145,30 @@ const RecommendedSports = (props: {
       classes: [
         "absolute mt-2 flex flex-col w-64 min-w-[max-content]",
         "items-start justify-start bg-white rounded gap-1 shadow-md h-max",
-        recommended === undefined ? "py-[0px]" : "py-1",
+        !recommended ? "py-[0px]" : "py-1",
       ],
-      c:
-        recommended === undefined // Not searching
-          ? []
-          : [
-              ...recommended.map((sport) =>
-                sr.button({
-                  classes:
-                    "text-base text-start px-3 py-1 text-sm text-black/60 hover:bg-slate-50 w-full",
-                  c: sport,
-                  on: {
-                    click: () => click(sport),
-                  },
-                })
-              ),
+      c: !recommended
+        ? []
+        : [
+            ...recommended.map((sport) =>
               sr.button({
                 classes:
-                  "text-base text-start px-3 py-1 text-sm text-black/40 hover:bg-slate-50 w-full",
-                c: `Add custom sport "${$search.current}"`,
+                  "text-base text-start px-3 py-1 text-sm text-black/60 hover:bg-slate-50 w-full",
+                c: sport,
                 on: {
-                  click: () => click($search.current),
+                  click: () => click(sport),
                 },
-              }),
-            ],
+              })
+            ),
+            sr.button({
+              classes:
+                "text-base text-start px-3 py-1 text-sm text-black/40 hover:bg-slate-50 w-full",
+              c: `Add custom sport "${$search.current}"`,
+              on: {
+                click: () => click($search.current),
+              },
+            }),
+          ],
     }))
   );
 };
