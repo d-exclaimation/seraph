@@ -118,3 +118,13 @@ export function zip<T extends State<unknown>[]>(
     },
   };
 }
+
+/**
+ * Run an effect when the state changes.
+ * @param state The state object to subscribe to.
+ * @param effect The effect to run.
+ * @returns A function to unsubscribe.
+ */
+export function effect<T>(state: State<T>, effect: (curr: T) => void) {
+  return state.subscribe(effect);
+}
