@@ -21,7 +21,6 @@ export function mount<
  * Render a component to a parent.
  * @param elem The component.
  * @param parent The parent.
- * @returns The component.
  */
 export function render<
   Parent extends HTMLElement,
@@ -29,4 +28,16 @@ export function render<
 >(elem: Component, parent: Parent) {
   parent.innerHTML = "";
   parent.appendChild(elem);
+}
+
+/**
+ * Modify a component to a target.
+ * @param elem The component.
+ * @param target The target.
+ */
+export function modify<
+  Target extends HTMLElement,
+  Component extends HTMLElement
+>(elem: Component, target: Target) {
+  target.parentElement?.appendChild(elem);
 }
