@@ -33,11 +33,11 @@
   },
   "files": [
     "dist",
-    "lib",
     "tsconfig.json",
     "README.md",
     "LICENSE",
-    "**/package.json"
+    "**/package.json",
+    "docs/public/seraph.png"
   ],
   "scripts": {
     "prepublish": "vite build; tsc",
