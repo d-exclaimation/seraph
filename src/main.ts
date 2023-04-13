@@ -184,7 +184,7 @@ const App = (props: { sports: string[] }) => {
       // Heading
       sr.div({
         classes: "flex w-full items-center py-4 justify-start px-6",
-        c: sr.h3({
+        c: sr.cont("reuse", {
           classes: "text-2xl font-bold text-black",
           c: "Favourite sport",
         }),
