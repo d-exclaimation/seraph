@@ -8,7 +8,7 @@
 import { state, type State } from "../state";
 
 /**
- * Get the props from the data attribute.
+ * Get the props from the `sr-props` attribute.
  * @param target The target element.
  * @param parser The parser function.
  * @returns The props.
@@ -17,15 +17,12 @@ export function load<P>(
   target: HTMLElement,
   parser: (value: string) => P = JSON.parse
 ) {
-  const raw = target.getAttribute("data-seraph-ssr");
-  if (raw === null || raw === undefined) {
-    throw new Error("No props found");
-  }
+  const raw = target.getAttribute("sr-props") ?? "{}";
   return parser(raw);
 }
 
 /**
- * Get the props from the data attribute and create a state.
+ * Get the props from the `sr-props` attribute and create a state.
  * @param target The target element.
  * @param parser The parser function.
  * @returns The props as a state.
