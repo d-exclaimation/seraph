@@ -2,6 +2,8 @@
 
 Seraph components are the building blocks of your application. They are used to describe the UI of your application, and are the primary way to interact with the DOM.
 
+[[toc]]
+
 ## Understanding Components
 
 In Seraph, components are simply functions that return an actual DOM element. They are no different from plain HTML elements, except that they are written declaratively and can integrated with Seraph's state.
@@ -54,6 +56,49 @@ const App = () => {
     ]
   });
 };
+```
+
+## Built-in Components
+
+The `sr` object have feature parity with all the built-in HTML elements. All you need to do is to prefix the element name with `sr.`.
+
+```ts 
+import { sr } from '@d-exclaimation/seraph'
+
+sr.h1({ c: "Hello World!" }); // HTMLHeadingElement
+sr.div({ c: "Hello World!" }); // HTMLDivElement
+sr.p({ c: "Hello World!" }); // HTMLParagraphElement
+sr.span({ c: "Hello World!" }); // HTMLSpanElement
+sr.a({ c: "Hello World!" }); // HTMLAnchorElement
+sr.img({ c: "Hello World!" }); // HTMLImageElement
+sr.input({}); // HTMLInputElement
+sr.button({ c: "Hello World!" }); // HTMLButtonElement
+
+// and so on...
+```
+
+### Using existing DOM elements as components
+
+You can also use existing DOM elements as components using `sr.cont`. This is useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
+
+```html
+<div id="tag">
+  Hello world!
+</div>
+```
+
+```ts
+import { sr } from '@d-exclaimation/seraph'
+
+const $state = sr.state("Hello world!");
+
+sr.cont("tag", sr.use($state, (state) => ({
+  c: state
+})));
+
+setTimeout(() => {
+  $state.set("Hello Seraph!");
+}, 1000);
 ```
 
 ## Component default props

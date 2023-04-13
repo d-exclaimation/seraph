@@ -29,7 +29,7 @@ features:
     details: Focussed on minimal abstraction and runtime overhead
   - icon: "🏝️"
     title: Interactivity
-    details: Supports full interactivity using island based client hydration
+    details: Supports full interactivity with capabilities selective hydration
   - icon: "📖"
     title: Familiar
     details: Uses familiar syntax and conventions, with a focus on developer experience

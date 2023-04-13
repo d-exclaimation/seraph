@@ -2,6 +2,8 @@
 
 Seraph comes with some built-in utilities for rendering components to the DOM. These utilities are available in the `sr` namespace.
 
+[[toc]]
+
 ## Simple rendering
 
 ### `sr.mount`
@@ -38,26 +40,6 @@ const App = () => {
 sr.render(App(), document.getElementById("app")!);
 ```
 
-### `sr.modify`
-
-::: danger Experimental
-This feature is still experimental and may change in the future.
-:::
-
-You can also modify the target element entirely.
-
-```ts
-import { sr } from '@d-exclaimation/seraph'
-
-const App = () => {
-  return sr.h1({
-    c: "Hello World!"
-  });
-};
-
-sr.modify(App(), document.getElementById("app")!);
-```
-
 ## Hydration
 
 Seraph also comes with a hydration utility that will allow you hydrate a rendered HTML DOM elements given some initial props and replace it with interactive components using the same props.
@@ -76,15 +58,15 @@ To perform hydration, you need to explicitly the `sr.hydrate` function.
 import { sr } from '@d-exclaimation/seraph'
 
 // Using props from the HTML element's `sr-props` attribute
-const App = (props: { count: number }) => { // [!code ++]
-  const $count = sr.state(props.count);     // [!code ++]
+const App = (props: { count: number }) => { 
+  const $count = sr.state(props.count);    
   return sr.button(                         
-    sr.use($count, (count) => ({            // [!code ++]
-      c: `Count: ${count}`,                 // [!code ++]
-      on: {                                 // [!code ++]
-        click: () => $count.set(count + 1), // [!code ++]
-      },                                    // [!code ++]
-    }))                                     // [!code ++]
+    sr.use($count, (count) => ({ 
+      c: `Count: ${count}`, 
+      on: { 
+        click: () => $count.set(count + 1),
+      },
+    })) 
   );                                        
 };                                          
 
@@ -96,13 +78,19 @@ sr.hydrate({
 
 Given the above example, the button will be replaced with an interactive component that will increment the count when clicked.
 
-::: tip Selective hydration / Island based client hydration
+### Selective hydration / Island based client hydration
 
 Seraph's hydration is not limited to the root element. You can also hydrate a specific element and its children.
 
 This is useful if you want to do island based client hydration where you can hydrate only the parts of the page that needs to be interactive.
 
 Using the same example above, you can hydrate only the button element.
+
+::: tip Using `sr.hydrate` with `sr.cont`
+
+You can also use `sr.cont` to hydrate an existing DOM element without having to replace it.
+
+:::
 
 ```html
 ...
@@ -112,8 +100,8 @@ Using the same example above, you can hydrate only the button element.
   </section>
   <section>
     <h2>This is a counter</h2>
-    <div id="counter-island" sr-props='{ "count": 10, "prefix": "Count:" }'>
-      <button>Count: 10</button>
+    <div id="counter-island" sr-props='{ "count": 10 }'>
+      <button id="count-button">Count: 10</button>
     </div>
     <p>Press the button to increment the count</p>
   </section>
@@ -128,13 +116,16 @@ Using the same example above, you can hydrate only the button element.
 ---
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { sr, type State } from '@d-exclaimation/seraph'
 
-const Counter = (props: { count: number, prefix: string }) => { 
-  const $count = sr.state(props.count);  // Only count needs to be a state
-  return sr.button(                         
+const Counter = (props: { count: number }) => { 
+  const $count = sr.state(props.count);
+  
+  // Re-use the existing button element with id `count-button`
+  return sr.cont(
+    "count-button",                         
     sr.use($count, (count) => ({          
-      c: `${props.prefix} ${count}`,               
+      c: `Count: ${count}`,               
       on: {                                
         click: () => $count.set(count + 1),
       },                                  
@@ -148,4 +139,3 @@ sr.hydrate({
   with: Counter,                              
 });
 ```
-:::

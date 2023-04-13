@@ -21,6 +21,10 @@ export default defineConfig({
         items: [
           { text: "Introduction", link: "/getting-started/introduction" },
           { text: "Quick start", link: "/getting-started/quickstart" },
+          {
+            text: "Adding to existing project",
+            link: "/getting-started/existing-project",
+          },
         ],
       },
       {

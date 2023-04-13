@@ -2,6 +2,8 @@
 
 States are one of the primary building blocks of a Seraph application. States represent data that may change over time, and be used to update the UI.
 
+[[toc]]
+
 ## Understanding States
 
 In Seraph, states are simply an observable variable that can be used to store data and emit update the data changes. They are not bounded to any component scope, and can even be used across multiple components.
@@ -89,7 +91,7 @@ import { sr } from '@d-exclaimation/seraph'
 
 const $count = sr.state(0);
 
-const $double = sr.from(() => $count.current * 2);
+const $double = sr.from($count, (count) => count * 2);
 
 console.log($double.current); // 0
 
@@ -108,7 +110,7 @@ import { sr } from '@d-exclaimation/seraph'
 const $count = sr.state(0);
 const $name = sr.state("John Doe");
 
-const $user = sr.zip([$count, $name]);
+const $user = sr.zip($count, $name);
 
 console.log($user.current); // [0, "John Doe"]
 
@@ -184,7 +186,7 @@ import { sr } from '@d-exclaimation/seraph'
 
 const $count = sr.state(0);
 
-const $double = sr.memo(() => $count.current * 2);
+const $double = sr.memo($count, (count) => count * 2);
 
 console.log($double.current); // 0
 
