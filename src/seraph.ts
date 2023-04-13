@@ -7,7 +7,7 @@
 
 import { hydrate, load } from "./ssr";
 import { all, effect, from, memo, query, state, zip } from "./state";
-import { html, modify, mount, render, use } from "./ui";
+import { cont, html, mount, render, use } from "./ui";
 
 const std = {
   state,
@@ -22,7 +22,7 @@ const std = {
   use,
   render,
   effect,
-  modify,
+  cont,
 } as const;
 
 export const sr = new Proxy({} as typeof html & typeof std, {
@@ -39,7 +39,7 @@ export const sr = new Proxy({} as typeof html & typeof std, {
     if (key === "use") return use;
     if (key === "render") return render;
     if (key === "effect") return effect;
-    if (key === "modify") return modify;
+    if (key === "cont") return cont;
 
     return html[key];
   },

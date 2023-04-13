@@ -20,7 +20,7 @@ type HydrateArgs<P> = {
  * @param with The component.
  * @param using The parser function.
  */
-export function hydrate<P>({
+export function hydrate<P = {}>({
   into: parent,
   with: component,
   using: parser,

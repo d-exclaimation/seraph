@@ -5,6 +5,8 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
+import { apply, type DefaultProps } from "./core";
+
 /**
  * Mount a component to a parent.
  * @param elem The component.
@@ -31,13 +33,16 @@ export function render<
 }
 
 /**
- * Modify a component to a target.
- * @param elem The component.
- * @param target The target.
+ * Create a component from an existing element by their id.
+ * @param id The id of the element.
+ * @param props The properties.
+ * @returns The component.
  */
-export function modify<
-  Target extends HTMLElement,
-  Component extends HTMLElement
->(elem: Component, target: Target) {
-  target.parentElement?.appendChild(elem);
+export function cont<T extends HTMLElement>(
+  id: string,
+  props: DefaultProps | ((parent: HTMLElement) => DefaultProps)
+) {
+  const elem = document.getElementById(id) as T;
+  apply(elem, typeof props === "function" ? props(elem) : props);
+  return elem;
 }
