@@ -6,7 +6,7 @@
 //
 
 import { beforeEach, describe, expectTypeOf, it, vi } from "vitest";
-import { Inner, State, from, state } from "../../src/seraph";
+import { Inner, State, effect, from, memo, state } from "../../src/seraph";
 
 describe("State primitives", () => {
   const $simple = state(0);
@@ -47,6 +47,24 @@ describe("State primitives", () => {
     const unsubs = [
       $simple.subscribe(simpleListener),
       $complex.subscribe(complexListener),
+    ];
+
+    $simple.current = 2;
+    $complex.current = { name: "John", age: 22 };
+
+    expect(simpleListener).toHaveBeenCalledWith(2);
+    expect(complexListener).toHaveBeenCalledWith({ name: "John", age: 22 });
+
+    unsubs.forEach((unsub) => unsub());
+  });
+
+  it("Should be subscribable with effect", ({ expect }) => {
+    const simpleListener = vi.fn<[Inner<typeof $simple>], void>();
+    const complexListener = vi.fn<[Inner<typeof $complex>], void>();
+
+    const unsubs = [
+      effect($simple, simpleListener),
+      effect($complex, complexListener),
     ];
 
     $simple.current = 2;
@@ -145,15 +163,11 @@ describe("Computed states", () => {
     expectTypeOf($computed.current).toEqualTypeOf<Inner<typeof $computed>>();
   });
 
-  it("Should start with the initial data given by the original state", ({
-    expect,
-  }) => {
+  it("Should start with the computed initial state", ({ expect }) => {
     expect($computed.current).toBe(0);
   });
 
-  it("Should be updated based on changes to the original state", ({
-    expect,
-  }) => {
+  it("Should be updated on changes to the original state", ({ expect }) => {
     $simple.current = 1;
 
     expect($computed.current).toBe(2);
@@ -163,6 +177,18 @@ describe("Computed states", () => {
     const computedListener = vi.fn<[Inner<typeof $computed>], void>();
 
     const unsub = $computed.subscribe(computedListener);
+
+    $simple.current = 2;
+
+    expect(computedListener).toHaveBeenCalledWith(4);
+
+    unsub();
+  });
+
+  it("Should be subscribable with effect", ({ expect }) => {
+    const computedListener = vi.fn<[Inner<typeof $computed>], void>();
+
+    const unsub = effect($computed, computedListener);
 
     $simple.current = 2;
 
@@ -185,5 +211,87 @@ describe("Computed states", () => {
     $simple.current = 4;
 
     expect(computedListener).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("Memoised states", () => {
+  const $simple = state(0);
+
+  const $memoised = memo($simple, (simple) => simple * 2);
+
+  beforeEach(() => {
+    $simple.current = 0;
+  });
+
+  it("Should have the correct typing", () => {
+    expectTypeOf($memoised).toEqualTypeOf<State<number>>();
+
+    expectTypeOf($memoised.current).toEqualTypeOf<Inner<typeof $memoised>>();
+  });
+
+  it("Should start with the initial data", ({ expect }) => {
+    expect($memoised.current).toBe(0);
+  });
+
+  it("Should be updated on changes to the original state", ({ expect }) => {
+    $simple.current = 1;
+
+    expect($memoised.current).toBe(2);
+  });
+
+  it("Should emit the new state to all listeners", ({ expect }) => {
+    const memoisedListener = vi.fn<[Inner<typeof $memoised>], void>();
+
+    const unsub = $memoised.subscribe(memoisedListener);
+
+    $simple.current = 2;
+
+    expect(memoisedListener).toHaveBeenCalledWith(4);
+
+    unsub();
+  });
+
+  it("Should be subscribable with effect", ({ expect }) => {
+    const memoisedListener = vi.fn<[Inner<typeof $memoised>], void>();
+
+    const unsub = effect($memoised, memoisedListener);
+
+    $simple.current = 2;
+
+    expect(memoisedListener).toHaveBeenCalledWith(4);
+
+    unsub();
+  });
+
+  it("Should be able to unsubscribe from the state", ({ expect }) => {
+    const memoisedListener = vi.fn<[Inner<typeof $memoised>], void>();
+
+    const unsub = $memoised.subscribe(memoisedListener);
+
+    $simple.current = 3;
+
+    expect(memoisedListener).toHaveBeenCalledWith(6);
+
+    unsub();
+
+    $simple.current = 4;
+
+    expect(memoisedListener).toHaveBeenCalledTimes(2);
+  });
+
+  it("Should not emit the new state if the value is the same", ({ expect }) => {
+    const memoisedListener = vi.fn<[Inner<typeof $memoised>], void>();
+
+    const unsub = $memoised.subscribe(memoisedListener);
+
+    $simple.current = 1;
+
+    expect(memoisedListener).toHaveBeenCalledTimes(2);
+
+    $simple.current = 1;
+
+    expect(memoisedListener).toHaveBeenCalledTimes(2);
+
+    unsub();
   });
 });
