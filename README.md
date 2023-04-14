@@ -3,11 +3,18 @@
   <img height="150" src="./docs/public/seraph.png"/>
 </p>
 
-<h1 align="center">Hassle-free web apps, in an instant</h1>
+<h1 align="center">
+  <span>Seraph</span>
+</h1>
 
-Seraph offers the fastest and simplest way to build web apps - regardless of the complexity of your website. Seraph is hassle-free because it can be used with or without any build tools, integrates with any server-side rendering framework, and allows fully interactive sites using partial hydration.
+Hassle-free web apps, in an instant. 
 
-All features of Seraph are built with simplicity in mind and built on top of the web platform, so it does not completely abstract away the web platform, and you can incrementally adopt Seraph into your existing projects.
+- No build steps, no dependencies, no configuration necessary
+- Built on top of web standards, can be used with plain HTML, CSS, and JS
+- Focussed on minimal abstraction and runtime overhead
+- Supports full interactivity with capabilities selective hydration
+- Uses familiar syntax and conventions, with a focus on developer experience
+- Small bundle size, less than 5kb gzipped
 
 ## Getting started
 
