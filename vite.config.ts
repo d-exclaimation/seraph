@@ -8,7 +8,7 @@ export default defineConfig({
       entry: "src/seraph.ts",
       name: "index",
       formats: ["es", "cjs"],
-      fileName: "index",
+      fileName: "seraph",
     },
   },
   server: {
