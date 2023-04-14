@@ -29,3 +29,12 @@ export type All<K extends Record<string, State<unknown>>> = {
 export type Zipped<T extends unknown[]> = T extends [State<infer A>, ...infer B]
   ? [A, ...Zipped<B>]
   : [];
+
+/**
+ * Extracts the inner type of a state object.
+ * @param T The state object.
+ * @returns The inner type.
+ */
+export type Inner<T extends State<unknown>> = T extends State<infer U>
+  ? U
+  : never;

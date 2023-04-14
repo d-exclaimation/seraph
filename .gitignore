@@ -23,9 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Docs generated files
-
+# Test and Docs generated files
+coverage/
 docs/.vitepress/cache
 docs/.vitepress/dist
+
 # Local Netlify folder
 .netlify
