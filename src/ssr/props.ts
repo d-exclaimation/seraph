@@ -27,6 +27,6 @@ export function resource<R>(
   parser: (value: string) => R = JSON.parse
 ) {
   const target = document.getElementById(id) as HTMLScriptElement;
-  const raw = target.innerText;
+  const raw = target.textContent || "{}";
   return state(parser(raw));
 }

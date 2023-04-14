@@ -22,7 +22,12 @@ export type QueryResult<T> =
  */
 export type QueryState<T> = State<QueryResult<T>> & {
   /**
-   * Invalidate the query and reload the data.
+   * Refetch the query, reload the data
+   */
+  refetch: () => Promise<void>;
+
+  /**
+   * Invalidate the query, reload the data (non-awaited)
    */
   invalidate: () => void;
 };
@@ -65,9 +70,9 @@ type QueryArgs<T> = {
     error?: (error: unknown) => void;
 
     /**
-     * Callback when the query resolved.
+     * Callback when the query settled.
      */
-    resolved?: (data?: T, error?: unknown) => void;
+    settled?: (data?: T, error?: unknown) => void;
   };
 };
 
@@ -83,14 +88,12 @@ type QueryArgs<T> = {
  * @example
  * ```ts
  * const $query = query({
- *  queryFn: () => fetch("https://jsonplaceholder.typicode.com/todos/1").then(res => res.json()),
- *  enabled: true,
- *  retry: 3,
- *  on: {
- *    success: (data) => console.log(data),
- *    error: (error) => console.error(error),
- *    resolved: (data, error) => console.log(data, error)
- *  }
+ *   queryFn: () => fetch("https://jsonplaceholder.typicode.com/todos/1").then(res => res.json()),
+ *   on: {
+ *     success: (data) => console.log(data),
+ *     error: (error) => console.error(error),
+ *     resolved: (data, error) => console.log(data, error)
+ *   }
  * });
  * ```
  */
@@ -102,7 +105,9 @@ export function query<T>({
   retry,
 }: QueryArgs<T>): QueryState<T> {
   const result = state<QueryResult<T>>(
-    initial ? { status: "success", data: initial } : { status: "idle" }
+    initial !== undefined
+      ? { status: "success", data: initial }
+      : { status: "idle" }
   );
 
   const fetcher = async () => {
@@ -113,12 +118,12 @@ export function query<T>({
         const data = await queryFn();
         result.current = { status: "success", data };
         on?.success?.(data);
-        on?.resolved?.(data);
+        on?.settled?.(data);
         return;
       } catch (e: unknown) {
         result.current = { status: "error", error: e };
         on?.error?.(e);
-        on?.resolved?.(undefined, e);
+        on?.settled?.(undefined, e);
       }
     }
   };
@@ -134,8 +139,11 @@ export function query<T>({
     subscribe(listener) {
       return result.subscribe(listener);
     },
+    refetch() {
+      return fetcher();
+    },
     invalidate() {
-      fetcher();
+      setTimeout(() => fetcher(), 0);
     },
   };
 }
