@@ -173,18 +173,19 @@ const RecommendedSports = ({
   );
 };
 
-const App = (props: { sports: string[] }) => {
-  const $sports = sr.state(new Set(props.sports));
+const App = () => {
+  const $props = sr.resource<{ sports: string[] }>("sr-sports-data");
+  const $sports = sr.state(new Set($props.current.sports));
   const $search = sr.state("");
 
-  return sr.div({
+  return sr.hydrate("counter-app", {
     classes:
       "flex flex-col max-w-xl w-[90vw] h-96 items-center justify-start rounded-md shadow-lg bg-white",
     c: [
       // Heading
       sr.div({
         classes: "flex w-full items-center py-4 justify-start px-6",
-        c: sr.cont("reuse", {
+        c: sr.hydrate("reuse", {
           classes: "text-2xl font-bold text-black",
           c: "Favourite sport",
         }),
@@ -241,7 +242,4 @@ const App = (props: { sports: string[] }) => {
   });
 };
 
-sr.hydrate({
-  into: document.getElementById("counter-app")!,
-  with: App,
-});
+App();

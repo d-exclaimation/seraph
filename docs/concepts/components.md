@@ -79,7 +79,7 @@ sr.button({ c: "Hello World!" }); // HTMLButtonElement
 
 ### Using existing DOM elements as components
 
-You can also use existing DOM elements as components using `sr.cont`. This is useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
+You can also use existing DOM elements as components using `sr.hydrate`. This is useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
 
 ```html
 <div id="tag">
@@ -92,7 +92,7 @@ import { sr } from '@d-exclaimation/seraph'
 
 const $state = sr.state("Hello world!");
 
-sr.cont("tag", sr.use($state, (state) => ({
+sr.hydrate("tag", sr.use($state, (state) => ({
   c: state
 })));
 
@@ -109,7 +109,7 @@ Built-in components in Seraph can be configured using the default `props` argume
 type DefaultProps = {
   classes?: string | string[];
   style?: Partial<CSSStyleDeclaration>;
-  c?: (HTMLElement | string)[];
+  c?: (HTMLElement | string) | (HTMLElement | string)[];
   on?: Partial<Record<keyof HTMLElementEventMap, (e: Event) => void>>;
   attr?: Record<string, any>;
 };

@@ -40,102 +40,137 @@ const App = () => {
 sr.render(App(), document.getElementById("app")!);
 ```
 
-## Hydration
+## Rendering with loaded data
 
-Seraph also comes with a hydration utility that will allow you hydrate a rendered HTML DOM elements given some initial props and replace it with interactive components using the same props.
+Seraph also comes with a utility to fetch data from a DOM element. This is useful to be used with a server-side rendered application where the server might load some data and pass it to the client.
 
-### `sr.hydrate`
+### `sr.load`
 
-To perform hydration, you need to explicitly the `sr.hydrate` function.
+To load data from a DOM element's `sr-props`, you need to explicitly call the `sr.load` function.
 
 ```html
-<div id="app" sr-props='{ "count": 10 }'>
-  <button>Count: 10</button>
-</div>
+<div id="count-data" sr-props='{ "count": 10 }'></div>
 ```
 
 ```ts
 import { sr } from '@d-exclaimation/seraph'
 
-// Using props from the HTML element's `sr-props` attribute
-const App = (props: { count: number }) => { 
-  const $count = sr.state(props.count);    
-  return sr.button(                         
-    sr.use($count, (count) => ({ 
-      c: `Count: ${count}`, 
-      on: { 
-        click: () => $count.set(count + 1),
-      },
-    })) 
-  );                                        
-};                                          
+const $props = sr.load<{ count: number }>('count-data');
 
-sr.hydrate({
-  into: document.getElementById("app")!     
-  with: App,                                // [!code ++]
-});
+const App = () => {
+  return sr.h1({
+    c: sr.use($props, ({ count }) => `Count: ${count}`)
+  });
+};
 ```
 
-Given the above example, the button will be replaced with an interactive component that will increment the count when clicked.
+### `sr.resource`
+
+Loaded data may instead be stored a json script element. In this case, you can use the `sr.resource` function to load the data.
+
+```html
+<script id="count-data" type="application/json">
+  { "count": 10 }
+</script>
+```
+
+```ts
+import { sr } from '@d-exclaimation/seraph'
+
+const $props = sr.resource<{ count: number }>('count-data');
+```
 
 ### Selective hydration / Island based client hydration
 
-Seraph's hydration is not limited to the root element. You can also hydrate a specific element and its children.
+Seraph's rendering is not limited to the root element. You can also just hydrate a specific element and its children.
 
-This is useful if you want to do island based client hydration where you can hydrate only the parts of the page that needs to be interactive.
+In many scenarios involving some server-side rendering, you might want to grab server loaded data and hydrate only the parts of the page that needs to be interactive.  This is called selective hydration or island based client hydration.
 
-Using the same example above, you can hydrate only the button element.
-
-::: tip Using `sr.hydrate` with `sr.cont`
-
-You can also use `sr.cont` to hydrate an existing DOM element without having to replace it.
-
-:::
+You can combine `sr.load` / `sr.resouce` and `sr.hydrate` to perform selective hydration given an some initial server loaded data.
 
 ```html
-...
 <body>
-  <section>
-    <h1>Some heading</h1>
+  <script id="__server_data" type="application/json">
+    {
+      "id": 1,
+      "name": "Some product name",
+      "description": "Some product description",
+      "images": [
+        { "id": 1, "url": "https://example.com/image1.png" },
+        { "id": 2, "url": "https://example.com/image2.png" },
+        { "id": 3, "url": "https://example.com/image3.png" }
+      ],
+      "tags": [
+        { "id": 1, "name": "tag1" },
+      ]
+    }
+  </script>
+  <section id="header">
+    <h1>Some product name</h1>
   </section>
-  <section>
-    <h2>This is a counter</h2>
-    <div id="counter-island" sr-props='{ "count": 10 }'>
-      <button id="count-button">Count: 10</button>
+
+  <section id="image-carousel" class="carousel">
+    <img src="https://example.com/image1.png" />
+    <div class="carousel-actions">
+      <button class="carousel-action-prev">Prev</button>
+      <button class="carousel-action-next">Next</button>
     </div>
-    <p>Press the button to increment the count</p>
   </section>
-  <section>
-    <div>
-      <p>Some paragraph</p>
+
+  <section id="product-description">
+    <p>Some product description</p>
+  </section>
+
+  <section id="product-tags">
+    <div class="tags">
+      <span>tag1</span>
     </div>
   </section>
 </body>
-...
 ```
----
 
 ```ts
-import { sr, type State } from '@d-exclaimation/seraph'
+import { sr } from '@d-exclaimation/seraph'
 
-const Counter = (props: { count: number }) => { 
-  const $count = sr.state(props.count);
-  
-  // Re-use the existing button element with id `count-button`
-  return sr.cont(
-    "count-button",                         
-    sr.use($count, (count) => ({          
-      c: `Count: ${count}`,               
-      on: {                                
-        click: () => $count.set(count + 1),
-      },                                  
-    }))                                  
-  );                                        
-}; 
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  images: { id: number; url: string }[];
+  tags: { id: number; name: string }[];
+};
 
-// Only hydrate the element with id `counter-island`, everything can remain static 
-sr.hydrate({
-  into: document.getElementById("counter-island")!,
-  with: Counter,                              
+const $product = sr.resource<Product>('__server_data');
+const $index = sr.state(0);
+const $image = sr.from(
+  sr.zip($product, $index), 
+  ({ images }, i) => images[i]
+);
+
+sr.hydrate("image-carousel", {
+  class: "carousel",
+  c: [
+    sr.img(
+      sr.use($image, (image) => ({
+        src: image.url,
+      }))
+    }),
+    sr.div({
+      class: "carousel-actions",
+      c: [
+        sr.button({
+          class: "carousel-action-prev",
+          c: "Prev",
+          on: { click: () => ($index.current = Math.max($index.current - 1, 0)) },
+        }),
+        sr.button({
+          class: "carousel-action-next",
+          c: "Next",
+          on: { click: () => ($index.current = Math.min($index.current + 1, $product.current.images.length - 1)) },
+        }),
+      ],
+    }),
+  ],
 });
 ```
+In this example, we are using `sr.hydrate` to hydrate the `image-carousel` element.  We are also using `sr.resource` to load the server data and `sr.state` to keep track of the current image index. By doing this, we are able to make the image carousel interactive without having to re-render the entire page.

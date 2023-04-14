@@ -65,7 +65,7 @@ You can add Seraph to your project without using npm or any other package manage
 
     const $count = sr.state(10);  // [!code ++]
 
-    sr.cont(  // [!code ++]
+    sr.hydrate(  // [!code ++]
       "count-number",  // [!code ++]
       sr.use($count, (count) => ({  // [!code ++]
         classes: "count-number",  // [!code ++]
@@ -73,30 +73,24 @@ You can add Seraph to your project without using npm or any other package manage
       }))  // [!code ++]
     );  // [!code ++]
 
-    sr.cont(  // [!code ++]
-      "btn-dec",  // [!code ++]
-      sr.button({a  // [!code ++]
-        c: "Decrement",  // [!code ++]
-        on: {  // [!code ++]
-          click: () => ($count.current--),  // [!code ++]
-        },  // [!code ++]
-      })  // [!code ++]
-    );  // [!code ++]
+    sr.hydrate("btn-dec", {  // [!code ++]
+      c: "Decrement",  // [!code ++]
+      on: {  // [!code ++]
+        click: () => ($count.current--),  // [!code ++]
+      },  // [!code ++]
+    });  // [!code ++]
 
-    sr.cont(  // [!code ++]
-      "btn-inc",  // [!code ++]
-      sr.button({  // [!code ++]
-        c: "Increment",  // [!code ++]
-        on: {  // [!code ++]
-          click: () => ($count.current++),  // [!code ++]
-        },  // [!code ++]
-      })  // [!code ++]
-    );  // [!code ++]
+    sr.hydrate("btn-inc", {  // [!code ++]
+      c: "Increment",  // [!code ++]
+      on: {  // [!code ++]
+        click: () => ($count.current++),  // [!code ++]
+      },  // [!code ++]
+    });  // [!code ++]
   </script>
 </html>
 ```
 
-In the code above, we are using `sr.cont` to use the existing DOM element with the id `count-number` and `btn-dec` and `btn-inc` respectively, instead of creating a new element.
+In the code above, we are using `sr.hydrate` to use the existing DOM element with the id `count-number` and `btn-dec` and `btn-inc` respectively, instead of creating a new element.
 
 
 ## Adding more logic 
@@ -130,7 +124,7 @@ Let's say we want to add a feature where:
 
     const $count = sr.state(10);
 
-    sr.cont(
+    sr.hydrate(
       "count-number",
       sr.use($count, (count) => ({
         classes: "count-number",
@@ -141,30 +135,25 @@ Let's say we want to add a feature where:
       }))
     );
 
-    sr.cont(
+    sr.hydrate(
       "btn-dec",
-      sr.button( // [!code ++]
-        sr.use($count, (count) => ({ // [!code ++]
-          c: "Decrement",
-          on: {
-            click: () => ($count.current--),
-          }, 
-          attr: { // [!code ++]
-            disabled: count === 0,  // [!code ++]
-          } // [!code ++]
-        }))
-      )
+      sr.use($count, (count) => ({ // [!code ++]
+        c: "Decrement",
+        on: {
+          click: () => ($count.current--),
+        }, 
+        attr: { // [!code ++]
+          disabled: count === 0,  // [!code ++]
+        } // [!code ++]
+      }))
     );
 
-    sr.cont(
-      "btn-inc",
-      sr.button({
-        c: "Increment",
-        on: {
-          click: () => ($count.current++),
-        },
-      })
-    );
+    sr.hydrate("btn-inc", {
+      c: "Increment",
+      on: {
+        click: () => ($count.current++),
+      },
+    });
   </script>
 </html>
 ```

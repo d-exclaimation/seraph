@@ -8,29 +8,25 @@
 import { state, type State } from "../state";
 
 /**
- * Get the props from the `sr-props` attribute.
- * @param target The target element.
- * @param parser The parser function.
- * @returns The props.
- */
-export function load<P>(
-  target: HTMLElement,
-  parser: (value: string) => P = JSON.parse
-) {
-  const raw = target.getAttribute("sr-props") ?? "{}";
-  return parser(raw);
-}
-
-/**
  * Get the props from the `sr-props` attribute and create a state.
- * @param target The target element.
+ * @param id The id of the element.
  * @param parser The parser function.
  * @returns The props as a state.
  */
-export function loaded<P>(
-  target: HTMLElement,
+export function load<P>(
+  id: string,
   parser: (value: string) => P = JSON.parse
 ): State<P> {
-  const initial = load(target, parser);
-  return state(initial);
+  const target = document.getElementById(id) as HTMLElement;
+  const raw = target.getAttribute("sr-props") ?? "{}";
+  return state(parser(raw));
+}
+
+export function resource<R>(
+  id: string,
+  parser: (value: string) => R = JSON.parse
+) {
+  const target = document.getElementById(id) as HTMLScriptElement;
+  const raw = target.innerText;
+  return state(parser(raw));
 }

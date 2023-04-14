@@ -33,12 +33,12 @@ export function render<
 }
 
 /**
- * Create a component from an existing element by their id.
+ * Hydrate an existing component by their id.
  * @param id The id of the element.
  * @param props The properties.
  * @returns The component.
  */
-export function cont<T extends HTMLElement>(
+export function hydrate<T extends HTMLElement>(
   id: string,
   props: DefaultProps | ((parent: HTMLElement) => DefaultProps)
 ) {
