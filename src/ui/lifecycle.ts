@@ -27,6 +27,7 @@ export function use<T>(
           parent.removeEventListener(key, value);
         });
         props.on = newProps.on;
+        console.log(newProps.on);
       }
       apply(parent, newProps);
     });
