@@ -22,11 +22,17 @@ export function load<P>(
   return state(parser(raw));
 }
 
+/**
+ * Get resource from the `textContent` of JSON script tag.
+ * @param id The id of the element.
+ * @param parser The parser function.
+ * @returns The resource as a state.
+ */
 export function resource<R>(
   id: string,
   parser: (value: string) => R = JSON.parse
 ) {
   const target = document.getElementById(id) as HTMLScriptElement;
-  const raw = target.innerText;
+  const raw = target.textContent || "{}";
   return state(parser(raw));
 }

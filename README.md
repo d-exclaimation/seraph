@@ -21,11 +21,11 @@ Hassle-free web apps, in an instant.
 ### Install
 
 ```sh
-npm create @d-exclaimation/seraph
+npm install @d-exclaimation/seraph
 # or
-pnpm create @d-exclaimation/seraph
+pnpm add @d-exclaimation/seraph
 # or
-yarn create @d-exclaimation/seraph
+yarn add @d-exclaimation/seraph
 ```
 
 ### Use a CDN

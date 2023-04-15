@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { type State, type Zipped } from "./types";
+import { type State } from "./types";
 
 /**
  * Creates a state object.
@@ -90,31 +90,6 @@ export function memo<T, K>(state: State<T>, compute: (curr: T) => K): State<K> {
         }
         listener(memoised.recompute());
       });
-    },
-  };
-}
-
-/**
- * Creates a state object that is a combination of other state objects.
- * @param states The state objects to combine.
- * @returns The combined state object.
- */
-export function zip<T extends State<unknown>[]>(
-  ...states: T
-): State<Zipped<T>> {
-  return {
-    get current() {
-      return states.map((state) => state.current) as Zipped<T>;
-    },
-    subscribe(listener) {
-      const unsubscribes = states.map((state) =>
-        state.subscribe(() => {
-          listener(states.map((state) => state.current) as Zipped<T>);
-        })
-      );
-      return () => {
-        unsubscribes.forEach((unsubscribe) => unsubscribe());
-      };
     },
   };
 }
