@@ -4,12 +4,12 @@ on:
   pull_request:
     branches:
       - main
-      - 'canary-*'
+      - 'canary*'
 
 jobs:
   type-check:
     container:
-      image: node:alpine
+      image: node:latest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -18,7 +18,7 @@ jobs:
     - run: pnpm lint
   test:
     container:
-      image: node:alpine
+      image: node:latest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
     - run: pnpm test:run
   build:
     container:
-      image: node:alpine
+      image: node:latest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
