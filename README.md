@@ -7,6 +7,9 @@
   <span>Seraph</span>
 </h1>
 
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fd-exclaimation%2Fseraph%2Fbadge%3Fref%3Dmain&style=flat-square)](https://actions-badge.atrox.dev/d-exclaimation/seraph/goto?ref=main)
+
+
 Hassle-free web apps, in an instant. 
 
 - No build steps, no dependencies, no configuration necessary
