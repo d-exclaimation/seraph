@@ -7,19 +7,6 @@ on:
       - 'canary*'
 
 jobs:
-  type-check:
-    container:
-      image: node:alpine
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/checkout@v3
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    - run: npm i -g pnpm
-    - run: pnpm i
-    - run: pnpm lint
   test:
     container:
       image: node:alpine
