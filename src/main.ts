@@ -1,4 +1,4 @@
-import { State, sr, type DefaultProps } from "./seraph";
+import { sr, type DefaultProps } from "./seraph";
 import "./style.css";
 
 const SPORTS = [
@@ -83,14 +83,25 @@ const SPORTS = [
   "North Korean Basketball",
 ];
 
-type TagProps = {
-  sport: string;
-  click: () => void;
-};
+const $data = sr.resource<{ sports: string[] }>("sr-sports-data");
+const $sports = sr.state(new Set($data.current.sports));
+const $search = sr.state("");
 
-const Tag = ({ sport, click }: TagProps) => {
+const $recommended = sr.from(sr.zip($sports, $search), ([sports, search]) => {
+  if (search.trim().length < 3) return undefined;
+  return SPORTS.map((sport) => sport.trim())
+    .filter((sport) => !sports.has(sport))
+    .filter((sport) => sport.toLowerCase().includes(search.toLowerCase()))
+    .slice(0, 5);
+});
+
+const Tag = (sport: string, click: () => void) => {
   return sr.span({
-    classes: "text-sm font-normal px-3 py-1 rounded-full text-black bg-sky-100",
+    classes: [
+      "flex justify-between text-sm font-normal",
+      "px-3 py-1 w-full md:w-fit rounded-sm",
+      "text-black bg-amber-100 md:rounded-full",
+    ],
     c: [
       sport,
       sr.button({
@@ -102,12 +113,7 @@ const Tag = ({ sport, click }: TagProps) => {
   });
 };
 
-type DropdownProps = {
-  to: HTMLElement;
-  c?: DefaultProps["c"];
-};
-
-const Dropdown = ({ to, c }: DropdownProps) => {
+const Dropdown = (to: HTMLElement, c: DefaultProps["c"]) => {
   return sr.div({
     classes: "flex flex-col w-full items-center justify-start",
     c: [
@@ -120,26 +126,7 @@ const Dropdown = ({ to, c }: DropdownProps) => {
   });
 };
 
-type RecommendedSportsProps = {
-  bind: {
-    $sports: State<Set<string>>;
-    $search: State<string>;
-  };
-  click: (sport: string) => void;
-};
-
-const RecommendedSports = ({
-  bind: { $search, $sports },
-  click,
-}: RecommendedSportsProps) => {
-  const $recommended = sr.from(sr.zip($sports, $search), ([sports, search]) => {
-    if (search.trim().length < 3) return undefined;
-    return SPORTS.filter(
-      (sport) =>
-        sport.toLowerCase().includes(search.toLowerCase()) && !sports.has(sport)
-    ).slice(0, 5);
-  });
-
+const RecommendedSports = (click: (sport: string) => void) => {
   return sr.div(
     sr.use($recommended, (recommended) => ({
       classes: [
@@ -173,14 +160,30 @@ const RecommendedSports = ({
   );
 };
 
-const App = () => {
-  const $props = sr.resource<{ sports: string[] }>("sr-sports-data");
-  const $sports = sr.state(new Set($props.current.sports));
-  const $search = sr.state("");
+const SearchBar = () => {
+  return sr.input(
+    sr.use($search, (search) => ({
+      classes: [
+        "px-3 py-1 text-sm md:text-base rounded-md w-full",
+        "outline-none select-none border-2 border-black/10",
+      ],
+      attr: {
+        placeholder: "Add a new favourite sport",
+        value: search,
+      },
+      on: {
+        input: (e) => ($search.current = (e.target as HTMLInputElement).value),
+      },
+    }))
+  );
+};
 
+const App = () => {
   return sr.hydrate("counter-app", {
-    classes:
-      "flex flex-col max-w-xl w-[90vw] h-96 items-center justify-start rounded-md shadow-lg bg-white",
+    classes: [
+      "flex flex-col items-center justify-start shadow-lg bg-white",
+      "max-w-xl w-[90vw] h-[90vh] md:h-96 rounded-lg",
+    ],
     c: [
       // Heading
       sr.div({
@@ -195,45 +198,28 @@ const App = () => {
       sr.div({
         classes: "flex w-full items-center justify-start px-4 gap-1",
         c: [
-          Dropdown({
-            to: sr.input(
-              sr.use($search, (search) => ({
-                classes:
-                  "px-3 py-1 text-base rounded-md w-full outline-none select-none border-2 border-black/10",
-                attr: {
-                  placeholder: "Add a new favourite sport",
-                  value: search,
-                },
-                on: {
-                  input: (e) =>
-                    ($search.current = (e.target as HTMLInputElement).value),
-                },
-              }))
-            ),
-            c: RecommendedSports({
-              bind: { $sports, $search },
-              click: (sport) => {
-                $sports.current.add(sport);
-                $sports.current = $sports.current;
-                $search.current = "";
-              },
-            }),
-          }),
+          Dropdown(
+            SearchBar(),
+            RecommendedSports((sport) => {
+              $sports.current.add(sport);
+              $sports.current = $sports.current;
+              $search.current = "";
+            })
+          ),
         ],
       }),
 
       // Tags
       sr.div(
         sr.use($sports, (sports) => ({
-          classes:
-            "flex flex-wrap w-full items-center justify-start px-4 my-4 gap-2",
+          classes: [
+            "flex flex-col sm:flex-row sm:flex-wrap w-full max-h-full overflow-y-auto",
+            "items-start sm:items-center justify-start px-4 my-4 gap-2",
+          ],
           c: [...sports].map((sport) =>
-            Tag({
-              sport,
-              click: () => {
-                $sports.current.delete(sport);
-                $sports.current = $sports.current;
-              },
+            Tag(sport, () => {
+              $sports.current.delete(sport);
+              $sports.current = $sports.current;
             })
           ),
         }))
