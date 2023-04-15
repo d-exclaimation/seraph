@@ -1,0 +1,38 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+      - 'canary-*'
+
+jobs:
+  type-check:
+    container:
+      image: node:alpine
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm i -g pnpm
+    - run: pnpm i
+    - run: pnpm lint
+  test:
+    container:
+      image: node:alpine
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm i -g pnpm
+    - run: pnpm i
+    - run: pnpm test:run
+  build:
+    container:
+      image: node:alpine
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm i -g pnpm
+    - run: pnpm i
+    - run: pnpm build
+
+  

@@ -50,7 +50,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "@vitest/coverage-c8": "^0.30.1",
