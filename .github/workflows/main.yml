@@ -9,28 +9,38 @@ on:
 jobs:
   type-check:
     container:
-      image: node:latest
+      image: node:alpine
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - run: npm i -g pnpm
     - run: pnpm i
     - run: pnpm lint
   test:
     container:
-      image: node:latest
+      image: node:alpine
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - run: npm i -g pnpm
     - run: pnpm i
     - run: pnpm test:run
   build:
     container:
-      image: node:latest
+      image: node:alpine
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - run: npm i -g pnpm
     - run: pnpm i
     - run: pnpm build
