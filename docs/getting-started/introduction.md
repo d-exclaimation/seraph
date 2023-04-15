@@ -25,11 +25,11 @@ Just want to try it out? Skip to the [Quickstart](/getting-started/quickstart).
 ## Install
 
 ```sh
-npm create @d-exclaimation/seraph
+npm install @d-exclaimation/seraph
 # or
-pnpm create @d-exclaimation/seraph
+pnpm add @d-exclaimation/seraph
 # or
-yarn create @d-exclaimation/seraph
+yarn add @d-exclaimation/seraph
 ```
 This will install **Seraph** as an npm dependency (with Typescript declarations). You can also use it without npm through a CDN.
 
