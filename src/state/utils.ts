@@ -5,6 +5,7 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
+import { state } from "./core";
 import { type All, type State, type Zipped } from "./types";
 
 /**
@@ -63,5 +64,36 @@ export function zip<T extends State<unknown>[]>(
         unsubscribes.forEach((unsubscribe) => unsubscribe());
       };
     },
+  };
+}
+
+/**
+ * Creates a mutable state object
+ *
+ * @param initial The initial value of the state object.
+ * @returns The mutable state object.
+ */
+export function mutable<T extends { [key: string | symbol]: unknown }>(
+  initial: T
+): State<T> {
+  const $state = state(initial);
+
+  return {
+    get current() {
+      return new Proxy($state.current, {
+        get: (_: T, key: keyof T) => {
+          return $state.current[key];
+        },
+        set: (_: T, key: keyof T, value: T[keyof T]) => {
+          $state.current[key] = value;
+          $state.current = $state.current;
+          return true;
+        },
+      });
+    },
+    set current(value) {
+      $state.current = value;
+    },
+    subscribe: $state.subscribe.bind($state),
   };
 }

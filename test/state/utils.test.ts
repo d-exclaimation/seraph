@@ -9,6 +9,7 @@ import { beforeEach, describe, expectTypeOf, it, vi } from "vitest";
 import {
   all,
   effect,
+  mutable,
   state,
   zip,
   type Inner,
@@ -165,5 +166,72 @@ describe("All states", () => {
     $complex.current = { name: "John", age: 21 };
 
     expect(allListener).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("Mutable states", () => {
+  const $complex = mutable({ name: "John", age: 20 });
+
+  beforeEach(() => {
+    $complex.current = { name: "John", age: 20 };
+  });
+
+  it("Should have the correct typing", () => {
+    expectTypeOf($complex).toEqualTypeOf<
+      State<{ name: string; age: number }>
+    >();
+  });
+
+  it("Should start with the initial data", ({ expect }) => {
+    expect($complex.current).toEqual({ name: "John", age: 20 });
+  });
+
+  it("Should be updated when any of the properties are updated", ({
+    expect,
+  }) => {
+    $complex.current.name = "Jane";
+    expect($complex.current).toEqual({ name: "Jane", age: 20 });
+
+    $complex.current.age = 21;
+    expect($complex.current).toEqual({ name: "Jane", age: 21 });
+  });
+
+  it("Should emit the new state to all listeners", ({ expect }) => {
+    const complexListener = vi.fn<[Inner<typeof $complex>], void>();
+
+    const unsub = $complex.subscribe(complexListener);
+
+    $complex.current.name = "Jane";
+    $complex.current.age = 21;
+
+    expect(complexListener).toHaveBeenCalledWith({ name: "Jane", age: 21 });
+
+    unsub();
+  });
+
+  it("Should be subscribable with effect", ({ expect }) => {
+    const complexListener = vi.fn<[Inner<typeof $complex>], void>();
+
+    const unsub = effect($complex, complexListener);
+
+    $complex.current.name = "Jane";
+    $complex.current.age = 21;
+
+    expect(complexListener).toHaveBeenCalledWith({ name: "Jane", age: 21 });
+
+    unsub();
+  });
+
+  it("Should be able to unsubscribe from the state", ({ expect }) => {
+    const complexListener = vi.fn<[Inner<typeof $complex>], void>();
+
+    const unsub = $complex.subscribe(complexListener);
+
+    unsub();
+
+    $complex.current.name = "Jane";
+    $complex.current.age = 21;
+
+    expect(complexListener).toHaveBeenCalledTimes(2);
   });
 });
