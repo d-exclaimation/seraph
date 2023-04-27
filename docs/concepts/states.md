@@ -172,6 +172,27 @@ const $query = query({
 });
 ```
 
+### `sr.mutable`
+
+::: danger Experimental
+This is an experimental feature. Mutable state uses `Proxy` which may have performance issues.
+:::
+
+This is a function that can be used to create a mutable object state. It takes an initial value and return a mutable state object.
+
+```ts
+import { sr } from '@d-exclaimation/seraph'
+
+const $count = sr.mutable({ count: 0 });
+
+console.log($count.current); // { count: 0 }
+
+$count.current.count = 1;
+
+console.log($count.current); // { count: 1 }
+```
+
+
 ### `sr.memo`
 
 ::: danger Experimental

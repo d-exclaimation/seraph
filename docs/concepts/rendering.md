@@ -58,9 +58,9 @@ import { sr } from '@d-exclaimation/seraph'
 const $props = sr.load<{ count: number }>('count-data');
 
 const App = () => {
-  return sr.h1({
-    c: sr.use($props, ({ count }) => `Count: ${count}`)
-  });
+  return sr.h1(
+    sr.use($props, ({ count }) => ({ c: `Count: ${count}`}))
+  );
 };
 ```
 
