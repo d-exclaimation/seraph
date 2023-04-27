@@ -232,6 +232,6 @@ describe("Mutable states", () => {
     $complex.current.name = "Jane";
     $complex.current.age = 21;
 
-    expect(complexListener).toHaveBeenCalledTimes(2);
+    expect(complexListener).toHaveBeenCalledTimes(1);
   });
 });
