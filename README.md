@@ -35,13 +35,13 @@ yarn add @d-exclaimation/seraph
 
 ```html
 <script type="module">
-  import { sr } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
+  import { html, mount } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
 
-  const App = sr.div({
+  const App = html.div({
     c: "Hello World!",
   });
 
-  sr.mount(App, document.getElementById("app"));
+  mount(App, document.getElementById("app"));
 </script>
 ```
 
