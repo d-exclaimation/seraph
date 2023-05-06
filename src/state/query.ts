@@ -114,7 +114,10 @@ export function query<T>({
     const trial = typeof retry === "number" ? retry : 0;
     for (let i = 0; i <= trial || (typeof retry === "boolean" && retry); i++) {
       try {
-        result.current = { status: "loading" };
+        result.current =
+          result.current.status === "success"
+            ? result.current
+            : { status: "loading" };
         const data = await queryFn();
         result.current = { status: "success", data };
         on?.success?.(data);
