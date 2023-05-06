@@ -225,4 +225,33 @@ describe("Query states", () => {
 
     unsub();
   });
+
+  it("Should keep old data if there's old data", async ({ expect }) => {
+    let i = 0;
+    const $fetcher = query({
+      queryFn: () =>
+        new Promise<number>((resolve) => setTimeout(() => resolve(i++), 10)),
+    });
+
+    await $fetcher.refetch();
+
+    expect($fetcher.current).toEqual({
+      status: "success",
+      data: 0,
+    });
+
+    $fetcher.invalidate();
+
+    expect($fetcher.current).toEqual({
+      status: "success",
+      data: 0,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    expect($fetcher.current).toEqual({
+      status: "success",
+      data: 1,
+    });
+  });
 });

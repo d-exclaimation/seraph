@@ -9,10 +9,10 @@ Seraph components are the building blocks of your application. They are used to 
 In Seraph, components are simply functions that return an actual DOM element. They are no different from plain HTML elements, except that they are written declaratively and can integrated with Seraph's state.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     c: "Hello World!"
   });
 };
@@ -24,10 +24,10 @@ const myH1 = App(); // HTMLHeadingElement
 This meant that you opt out of Seraph's style of writing components, you can still use plain HTML elements in your application.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     c: "Hello World!"
   });
 };
@@ -42,14 +42,14 @@ document.body.appendChild(myH1);
 or vice versa
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const subtitleElement = document.getElementById("subtitle")!;
 
 const App = () => {
-  return sr.div({
+  return html.div({
     c: [
-      sr.h1({
+      html.h1({
         c: "Hello World!"
       }),
       subtitleElement
@@ -60,26 +60,26 @@ const App = () => {
 
 ## Built-in Components
 
-The `sr` object have feature parity with all the built-in HTML elements. All you need to do is to prefix the element name with `sr.`.
+The `html` object have feature parity with all the built-in HTML elements. All you need to do is to prefix the element name with `html.`.
 
 ```ts 
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
-sr.h1({ c: "Hello World!" }); // HTMLHeadingElement
-sr.div({ c: "Hello World!" }); // HTMLDivElement
-sr.p({ c: "Hello World!" }); // HTMLParagraphElement
-sr.span({ c: "Hello World!" }); // HTMLSpanElement
-sr.a({ c: "Hello World!" }); // HTMLAnchorElement
-sr.img({ c: "Hello World!" }); // HTMLImageElement
-sr.input({}); // HTMLInputElement
-sr.button({ c: "Hello World!" }); // HTMLButtonElement
+html.h1({ c: "Hello World!" }); // HTMLHeadingElement
+html.div({ c: "Hello World!" }); // HTMLDivElement
+html.p({ c: "Hello World!" }); // HTMLParagraphElement
+html.span({ c: "Hello World!" }); // HTMLSpanElement
+html.a({ c: "Hello World!" }); // HTMLAnchorElement
+html.img({ c: "Hello World!" }); // HTMLImageElement
+html.input({}); // HTMLInputElement
+html.button({ c: "Hello World!" }); // HTMLButtonElement
 
 // and so on...
 ```
 
 ### Using existing DOM elements as components
 
-You can also use existing DOM elements as components using `sr.hydrate`. This is useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
+You can also use existing DOM elements as components using `hydrate`. This is useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
 
 ```html
 <div id="tag">
@@ -88,16 +88,19 @@ You can also use existing DOM elements as components using `sr.hydrate`. This is
 ```
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state, hydrate, use } from '@d-exclaimation/seraph'
 
-const $state = sr.state("Hello world!");
+const $state = state("Hello world!");
 
-sr.hydrate("tag", sr.use($state, (state) => ({
-  c: state
-})));
+hydrate(
+  "tag", 
+  use($state, (state) => ({
+    c: state
+  }))
+);
 
 setTimeout(() => {
-  $state.set("Hello Seraph!");
+  $state.current = "Hello Seraph!";
 }, 1000);
 ```
 
@@ -121,10 +124,10 @@ type DefaultProps = {
 The `classes` prop is used to add CSS classes to the component. It can be a string or an array of strings.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     classes: ["text-2xl", "font-bold"] // [!code ++]
   });
 };
@@ -141,10 +144,10 @@ Result in
 The `style` prop is used to add inline CSS styles to the component. 
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     style: {
       color: "red", // [!code ++]
       fontSize: "2rem" // [!code ++]
@@ -164,15 +167,15 @@ Result in
 The `c` prop is used to add children to the component. It can be a string and HTMLElements or an array of strings and HTMLElements.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.div({
+  return html.div({
     c: [
-      sr.h1({ // [!code ++]
+      html.h1({ // [!code ++]
         c: "Hello World!" // [!code ++]
       }), // [!code ++]
-      sr.p({ // [!code ++]
+      html.p({ // [!code ++]
         c: "This is a paragraph" // [!code ++]
       }) // [!code ++]
     ]
@@ -194,10 +197,10 @@ Result in
 The `on` prop is used to add event listeners to the component. All events are using the same callback type as `addEventListener`.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.div({
+  return html.div({
     on: {
       click: (ev) => { // [!code ++]
         console.log("Clicked!"); // [!code ++]
@@ -212,10 +215,10 @@ const App = () => {
 The `attr` prop is used to add any other attributes to the component. 
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.div({
+  return html.div({
     attr: {
       id: "my-div" // [!code ++]
     }
@@ -231,22 +234,22 @@ Result in
 
 ## Binding components to state
 
-Components can be bound to state using the `sr.use` function. This will automatically update the component properties when the state changes.
+Components can be bound to state using the `use` function. This will automatically update the component properties when the state changes.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html, state, use } from '@d-exclaimation/seraph'
 
 const App = () => {
-  const $count = sr.state(0);
+  const $count = state(0);
 
-  return sr.div({
+  return html.div({
     c: [
-      sr.h1(
-        sr.use($count, (count) => ({ // [!code ++]
+      html.h1(
+        use($count, (count) => ({ // [!code ++]
           c: `Count: ${count}`; // [!code ++]
         })) // [!code ++]
       ),
-      sr.button({
+      html.button({
         c: "Click me!",
         on: {
           click: () => {
@@ -259,40 +262,40 @@ const App = () => {
 }
 ```
 
-`sr.use` takes in a state and a function that returns the component props. The function will be called whenever the state passed in changes.
+`use` takes in a state and a function that returns the component props. The function will be called whenever the state passed in changes.
 
-::: details Using `sr.use` for surgical updates
-This means that you smartly use `sr.use` to only update the component props that are actually changed, and even only passed certain states that you is relevant to the component.
+::: details Using `use` for surgical updates
+This means that you smartly use `use` to only update the component props that are actually changed, and even only passed certain states that you is relevant to the component.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html, state, use } from '@d-exclaimation/seraph'
 
 const App = () => {
-  const $count = sr.state(0);
+  const $count = state(0);
 
-  return sr.div({
+  return html.div({
     c: [
       // Only component that needs to be updated
-      sr.h1( // [!code ++]
-        sr.use($count, (count) => ({ // [!code ++]
+      html.h1( // [!code ++]
+        use($count, (count) => ({ // [!code ++]
           c: `Count: ${count}`; // [!code ++]
         })) // [!code ++]
       ), // [!code ++]
 
       // None of these components need to be updated when the count changes
-      sr.div({
+      html.div({
         c: [
-          sr.button({
+          html.button({
             c: "Decrement",
             on: { click: () => ($count.value--) }
           }),
-          sr.button({
+          html.button({
             c: "Increment",
             on: { click: () => ($count.value++) }
           }), 
         ]
       })
-      sr.button({
+      html.button({
         c: "Reset",
         on: { click: () => ($count.value = 0) }
       }),
