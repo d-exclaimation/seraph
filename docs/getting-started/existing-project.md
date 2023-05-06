@@ -61,26 +61,26 @@ You can add Seraph to your project without using npm or any other package manage
   </body>
 
   <script type="module">
-    import { sr } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
+    import { state, hydrate, use } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
 
-    const $count = sr.state(10);  // [!code ++]
+    const $count = state(10);  // [!code ++]
 
-    sr.hydrate(  // [!code ++]
+    hydrate(  // [!code ++]
       "count-number",  // [!code ++]
-      sr.use($count, (count) => ({  // [!code ++]
+      use($count, (count) => ({  // [!code ++]
         classes: "count-number",  // [!code ++]
         c: `${count}`, // [!code ++]
       }))  // [!code ++]
     );  // [!code ++]
 
-    sr.hydrate("btn-dec", {  // [!code ++]
+    hydrate("btn-dec", {  // [!code ++]
       c: "Decrement",  // [!code ++]
       on: {  // [!code ++]
         click: () => ($count.current--),  // [!code ++]
       },  // [!code ++]
     });  // [!code ++]
 
-    sr.hydrate("btn-inc", {  // [!code ++]
+    hydrate("btn-inc", {  // [!code ++]
       c: "Increment",  // [!code ++]
       on: {  // [!code ++]
         click: () => ($count.current++),  // [!code ++]
@@ -90,7 +90,7 @@ You can add Seraph to your project without using npm or any other package manage
 </html>
 ```
 
-In the code above, we are using `sr.hydrate` to use the existing DOM element with the id `count-number` and `btn-dec` and `btn-inc` respectively, instead of creating a new element.
+In the code above, we are using `hydrate` to use the existing DOM element with the id `count-number` and `btn-dec` and `btn-inc` respectively, instead of creating a new element.
 
 
 ## Adding more logic 
@@ -120,13 +120,13 @@ Let's say we want to add a feature where:
   </body>
 
   <script type="module">
-    import { sr } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
+    import { state, hydrate, use } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; 
 
-    const $count = sr.state(10);
+    const $count = state(10);
 
-    sr.hydrate(
+    hydrate(
       "count-number",
-      sr.use($count, (count) => ({
+      use($count, (count) => ({
         classes: "count-number",
         style: {  // [!code ++]
           color: count % 2 === 0 ? "blue" : "green",  // [!code ++]
@@ -135,9 +135,9 @@ Let's say we want to add a feature where:
       }))
     );
 
-    sr.hydrate(
+    hydrate(
       "btn-dec",
-      sr.use($count, (count) => ({ // [!code ++]
+      use($count, (count) => ({ // [!code ++]
         c: "Decrement",
         on: {
           click: () => ($count.current--),
@@ -148,7 +148,7 @@ Let's say we want to add a feature where:
       }))
     );
 
-    sr.hydrate("btn-inc", {
+    hydrate("btn-inc", {
       c: "Increment",
       on: {
         click: () => ($count.current++),
@@ -177,15 +177,15 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
   </body>
 
   <script type="module">
-    import { sr } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
+    import { state, from, html, use, zip, render } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
 
-    const $board = sr.state([
+    const $board = state([
       ["_", "_", "_"],
       ["_", "_", "_"],
       ["_", "_", "_"],
     ]);
-    const $turn = sr.state("X");
-    const $winner = sr.from($board, (board) => {
+    const $turn = state("X");
+    const $winner = from($board, (board) => {
       // Rows
       for (let i = 0; i < 3; i++) {
         if (board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
@@ -226,23 +226,23 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
     };
 
     const Game = () => {
-      return sr.div({
+      return html.div({
         classes: "board",
         c: [
-          sr.div(
-            sr.use(sr.zip($winner, $turn), ([winner, turn]) => ({
+          html.div(
+            use(zip($winner, $turn), ([winner, turn]) => ({
               classes: "board-status",
               c: winner ? `Winner: ${winner}` : `Next player: ${turn}`,
             }))
           ),
-          sr.div(
-            sr.use($board, (board) => ({
+          html.div(
+            use($board, (board) => ({
               classes: "board-grid",
               c: board.map((row, i) =>
-                sr.div({
+                html.div({
                   classes: "board-row",
                   c: row.map((col, j) =>
-                    sr.button({
+                    html.button({
                       classes: "board-square",
                       c: `${col}`,
                       on: { click: () => clickAt(i, j) },
@@ -256,7 +256,7 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
       });
     };
 
-    sr.render(
+    render(
       Game(),
       document.getElementById("tic-tac-toe")!
     );

@@ -36,7 +36,9 @@ This will install **Seraph** as an npm dependency (with Typescript declarations)
 ::: details Using [Skypack](https://www.skypack.dev/)
 ```html
 <script type="module">
-  import { sr } from 'https://cdn.skypack.dev/@d-exclaimation/seraph'
+  import { state } from 'https://cdn.skypack.dev/@d-exclaimation/seraph'
+
+  const $counter = state(0);
 </script>
 ```
 :::
@@ -44,7 +46,19 @@ This will install **Seraph** as an npm dependency (with Typescript declarations)
 ::: details Using [JSDelivr](https://www.jsdelivr.com/)
 ```html
 <script type="module">
-  import { sr } from 'https://cdn.jsdelivr.net/npm/@d-exclaimation/seraph'
+  import { state } from 'https://cdn.skypack.dev/@d-exclaimation/seraph'
+
+  const $counter = state(0);
+</script>
+```
+:::
+
+::: details Using [JSDelivr's ESM Run](https://www.esm.run/)
+```html
+<script type="module">
+  import { state } from 'https://esm.run/@d-exclaimation/seraph'
+
+  const $counter = state(0);
 </script>
 ```
 :::

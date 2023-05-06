@@ -1,72 +1,72 @@
 # Rendering
 
-Seraph comes with some built-in utilities for rendering components to the DOM. These utilities are available in the `sr` namespace.
+Seraph comes with some built-in utilities for rendering components to the DOM. 
 
 [[toc]]
 
 ## Simple rendering
 
-### `sr.mount`
+### `mount`
 
 You can do a simple mounting where a component will just be appended to the target element.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html, mount } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     c: "Hello World!"
   });
 };
 
-sr.mount(App(), document.getElementById("app")!);
+mount(App(), document.getElementById("app")!);
 ```
 
 This can be useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
 
-### `sr.render`
+### `render`
 
 You can also do a full rendering where the target element inner content will be replaced with the component.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { html, render } from '@d-exclaimation/seraph'
 
 const App = () => {
-  return sr.h1({
+  return html.h1({
     c: "Hello World!"
   });
 };
 
-sr.render(App(), document.getElementById("app")!);
+render(App(), document.getElementById("app")!);
 ```
 
 ## Rendering with loaded data
 
 Seraph also comes with a utility to fetch data from a DOM element. This is useful to be used with a server-side rendered application where the server might load some data and pass it to the client.
 
-### `sr.load`
+### `load`
 
-To load data from a DOM element's `sr-props`, you need to explicitly call the `sr.load` function.
+To load data from a DOM element's `sr-props`, you need to explicitly call the `load` function.
 
 ```html
 <div id="count-data" sr-props='{ "count": 10 }'></div>
 ```
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { load, html, use } from '@d-exclaimation/seraph'
 
-const $props = sr.load<{ count: number }>('count-data');
+const $props = load<{ count: number }>('count-data');
 
 const App = () => {
-  return sr.h1(
-    sr.use($props, ({ count }) => ({ c: `Count: ${count}`}))
+  return html.h1(
+    use($props, ({ count }) => ({ c: `Count: ${count}`}))
   );
 };
 ```
 
-### `sr.resource`
+### `resource`
 
-Loaded data may instead be stored a json script element. In this case, you can use the `sr.resource` function to load the data.
+Loaded data may instead be stored a json script element. In this case, you can use the `resource` function to load the data.
 
 ```html
 <script id="count-data" type="application/json">
@@ -75,9 +75,9 @@ Loaded data may instead be stored a json script element. In this case, you can u
 ```
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { resource } from '@d-exclaimation/seraph'
 
-const $props = sr.resource<{ count: number }>('count-data');
+const $props = resource<{ count: number }>('count-data');
 ```
 
 ### Selective hydration / Island based client hydration
@@ -86,7 +86,7 @@ Seraph's rendering is not limited to the root element. You can also just hydrate
 
 In many scenarios involving some server-side rendering, you might want to grab server loaded data and hydrate only the parts of the page that needs to be interactive.  This is called selective hydration or island based client hydration.
 
-You can combine `sr.load` / `sr.resouce` and `sr.hydrate` to perform selective hydration given an some initial server loaded data.
+You can combine `load` / `resouce` and `hydrate` to perform selective hydration given an some initial server loaded data.
 
 ```html
 <body>
@@ -130,7 +130,7 @@ You can combine `sr.load` / `sr.resouce` and `sr.hydrate` to perform selective h
 ```
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { resource, state, from, zip, hydrate, html, use } from '@d-exclaimation/seraph'
 
 type Product = {
   id: number;
@@ -140,30 +140,27 @@ type Product = {
   tags: { id: number; name: string }[];
 };
 
-const $product = sr.resource<Product>('__server_data');
-const $index = sr.state(0);
-const $image = sr.from(
-  sr.zip($product, $index), 
-  ({ images }, i) => images[i]
-);
+const $product = resource<Product>('__server_data');
+const $index = state(0);
+const $image = from(zip($product, $index), ({ images }, i) => images[i]);
 
-sr.hydrate("image-carousel", {
+hydrate("image-carousel", {
   class: "carousel",
   c: [
-    sr.img(
-      sr.use($image, (image) => ({
+    html.img(
+      use($image, (image) => ({
         src: image.url,
       }))
     }),
-    sr.div({
+    html.div({
       class: "carousel-actions",
       c: [
-        sr.button({
+        html.button({
           class: "carousel-action-prev",
           c: "Prev",
           on: { click: () => ($index.current = Math.max($index.current - 1, 0)) },
         }),
-        sr.button({
+        html.button({
           class: "carousel-action-next",
           c: "Next",
           on: { click: () => ($index.current = Math.min($index.current + 1, $product.current.images.length - 1)) },
@@ -173,4 +170,4 @@ sr.hydrate("image-carousel", {
   ],
 });
 ```
-In this example, we are using `sr.hydrate` to hydrate the `image-carousel` element.  We are also using `sr.resource` to load the server data and `sr.state` to keep track of the current image index. By doing this, we are able to make the image carousel interactive without having to re-render the entire page.
+In this example, we are using `hydrate` to hydrate the `image-carousel` element.  We are also using `resource` to load the server data and `state` to keep track of the current image index. By doing this, we are able to make the image carousel interactive without having to re-render the entire page.

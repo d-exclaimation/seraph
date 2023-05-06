@@ -51,27 +51,27 @@ $user.subscribe((state) => {
 
 ## State primitives
 
-### `sr.state`
+### `state`
 
 This is the basic state function that can be used to create a state. It takes an initial value and return a state object.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
+const $count = state(0);
 
 ```
 
-### `sr.effect`
+### `effect`
 
 This is a function that can be used to run some code whenever the state changes. It takes a state and a callback function that will be called whenever the state changes.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state, effect } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
+const $count = state(0);
 
-sr.effect($count, count => console.log(count)); // 0
+effect($count, count => console.log(count)); // 0
 
 $count.current = 1; // 1
 
@@ -82,16 +82,16 @@ $count.current = 2; // 2
 None :grin:.
 :::
 
-### `sr.from`
+### `from`
 
 This is a function that can be used to create a computed state from another. It takes a callback function that will be called whenever the state changes to compute the new value.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state, from } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
+const $count = state(0);
 
-const $double = sr.from($count, (count) => count * 2);
+const $double = from($count, (count) => count * 2);
 
 console.log($double.current); // 0
 
@@ -100,17 +100,17 @@ $count.current = 1;
 console.log($double.current); // 2
 ```
 
-### `sr.zip`
+### `zip`
 
 This is a function that can be used to create a readonly zipped state from multiple states. Useful for creating a readonly state that depends on multiple states.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state, zip } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
-const $name = sr.state("John Doe");
+const $count = state(0);
+const $name = state("John Doe");
 
-const $user = sr.zip($count, $name);
+const $user = zip($count, $name);
 
 console.log($user.current); // [0, "John Doe"]
 
@@ -123,17 +123,17 @@ $name.current = "Jane Doe";
 console.log($user.current); // [1, "Jane Doe"]
 ```
 
-### `sr.all`
+### `all`
 
-This is a function that can be used to create a readonly combined object state from multiple states. Similar to `sr.zip`, but instead of an array, it will return an object with the same keys as the states.
+This is a function that can be used to create a readonly combined object state from multiple states. Similar to `zip`, but instead of an array, it will return an object with the same keys as the states.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { state, all } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
-const $name = sr.state("John Doe");
+const $count = state(0);
+const $name = state("John Doe");
 
-const $user = sr.all({ count: $count, name: $name });
+const $user = all({ count: $count, name: $name });
 
 console.log($user.current); // { count: 0, name: "John Doe" }
 
@@ -146,16 +146,12 @@ $name.current = "Jane Doe";
 console.log($user.current); // { count: 1, name: "Jane Doe" }
 ```
 
-### `sr.query`
-
-::: warning Beta
-This is a beta feature. The API may change in the future.
-:::
+### `query`
 
 This is a function that can be used to create a readonly state from a data fetched logic. This is highly insipired by [@tanstack/query](https://tanstack.com/query/).
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { query } from '@d-exclaimation/seraph'
 
 const $query = query({
   queryFn: async () => {
@@ -172,18 +168,49 @@ const $query = query({
 });
 ```
 
-### `sr.mutable`
+### `transition`
+
+This is a function that can be used to determine the progress of an action.
+
+```ts
+import { transition, query, effect } from '@d-exclaimation/seraph'
+
+const $isMutating = transition();
+
+const $data = query({ ... });
+
+console.log($isMutating.current); // false
+
+$isMutating.start(async () => {
+  const res = await fetch("..."):
+
+  if (!res.ok) {
+    return;
+  }
+
+  $data.invalidate();
+});
+
+console.log($isMutating.current); // true
+
+// - After the fetch resolves
+
+console.log($isMutating.current); // false
+
+```
+
+### `mutable`
 
 ::: danger Experimental
-This is an experimental feature. Mutable state uses `Proxy` which may have performance issues.
+This is an experimental feature. Mutable state is still being optimised as currently it uses `Proxy` which may have performance issues.
 :::
 
 This is a function that can be used to create a mutable object state. It takes an initial value and return a mutable state object.
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { mutable } from '@d-exclaimation/seraph'
 
-const $count = sr.mutable({ count: 0 });
+const $count = mutable({ count: 0 });
 
 console.log($count.current); // { count: 0 }
 
@@ -193,7 +220,7 @@ console.log($count.current); // { count: 1 }
 ```
 
 
-### `sr.memo`
+### `memo`
 
 ::: danger Experimental
 This is an experimental feature. Validating state changes is using `Object.is` which may not be enough for some cases.
@@ -205,9 +232,9 @@ This is a function that can be used to create a memoized state from another. It 
 ```ts
 import { sr } from '@d-exclaimation/seraph'
 
-const $count = sr.state(0);
+const $count = state(0);
 
-const $double = sr.memo($count, (count) => count * 2);
+const $double = memo($count, (count) => count * 2);
 
 console.log($double.current); // 0
 
