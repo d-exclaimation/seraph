@@ -11,6 +11,7 @@ import {
   effect,
   mutable,
   state,
+  transition,
   zip,
   type Inner,
   type State,
@@ -233,5 +234,36 @@ describe("Mutable states", () => {
     $complex.current.age = 21;
 
     expect(complexListener).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Transition states", () => {
+  const $complex = state({ name: "John", age: 20 });
+  const $updating = transition();
+
+  beforeEach(() => {
+    $complex.current = { name: "John", age: 20 };
+  });
+
+  it("Should have the correct typing", () => {
+    expectTypeOf($updating).toEqualTypeOf<
+      State<boolean> & { start: (action: () => Promise<void>) => void }
+    >();
+  });
+
+  it("Should start with the initial data", ({ expect }) => {
+    expect($updating.current).toEqual(false);
+  });
+
+  it("Should be true while an action is taking place", async ({ expect }) => {
+    expect($updating.current).toEqual(false);
+
+    $updating.start(() => new Promise((resolve) => setTimeout(resolve, 100)));
+
+    expect($updating.current).toEqual(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    expect($updating.current).toEqual(false);
   });
 });

@@ -97,3 +97,26 @@ export function mutable<T extends { [key: string | symbol]: unknown }>(
     subscribe: $state.subscribe.bind($state),
   };
 }
+
+/**
+ * Creates a state object that indicates whether an action is in progress.
+ * @returns The transition state object.
+ */
+export function transition(): State<boolean> & {
+  start: (action: () => Promise<void>) => void;
+} {
+  const $isTransitioning = state(false);
+
+  return {
+    subscribe: $isTransitioning.subscribe.bind($isTransitioning),
+    get current() {
+      return $isTransitioning.current;
+    },
+    start(action: () => Promise<void>) {
+      $isTransitioning.current = true;
+      action().finally(() => {
+        $isTransitioning.current = false;
+      });
+    },
+  };
+}
