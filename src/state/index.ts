@@ -7,5 +7,6 @@
 
 export * from "./core";
 export * from "./query";
+export * from "./reducer";
 export * from "./types";
 export * from "./utils";
