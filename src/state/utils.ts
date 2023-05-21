@@ -105,17 +105,17 @@ export function mutable<T extends { [key: string | symbol]: unknown }>(
 export function transition(): State<boolean> & {
   start: (action: () => Promise<void>) => void;
 } {
-  const $isTransitioning = state(false);
+  const $transition = state(false);
 
   return {
-    subscribe: $isTransitioning.subscribe.bind($isTransitioning),
+    subscribe: $transition.subscribe.bind($transition),
     get current() {
-      return $isTransitioning.current;
+      return $transition.current;
     },
     start(action: () => Promise<void>) {
-      $isTransitioning.current = true;
+      $transition.current = true;
       action().finally(() => {
-        $isTransitioning.current = false;
+        $transition.current = false;
       });
     },
   };
