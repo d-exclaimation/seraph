@@ -27,7 +27,7 @@ npm install @d-exclaimation/seraph
 Let's start simple, create a new component called `HelloWorld`:
 
 ```ts
-import { html, render } from '@d-exclaimation/seraph'
+import { html, render } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -45,7 +45,7 @@ Let's spice things up a bit by adding some interactivity to our component. We'll
 
 
 ```ts{6-20}
-import { html, render, state, use } from '@d-exclaimation/seraph' // [!code ++]
+import { html, render, state, use } from "@d-exclaimation/seraph"; // [!code ++]
 
 const App = () => {
   const $count = state(0); // [!code ++]
@@ -85,7 +85,7 @@ To change the state, we only need to reassign the state's `current` property. In
 We can use the `effect` function to run some code whenever the state changes. Let's add a `console.log` whenever the state changes:
 
 ```ts
-import { html, render, state, use, effect } from '@d-exclaimation/seraph' // [!code ++]
+import { html, render, state, use, effect } from "@d-exclaimation/seraph"; // [!code ++]
 
 const App = () => {
   const $count = state(0);

@@ -9,7 +9,7 @@ Seraph components are the building blocks of your application. They are used to 
 In Seraph, components are simply functions that return an actual DOM element. They are no different from plain HTML elements, except that they are written declaratively and can integrated with Seraph's state.
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -24,7 +24,7 @@ const myH1 = App(); // HTMLHeadingElement
 This meant that you opt out of Seraph's style of writing components, you can still use plain HTML elements in your application.
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -42,7 +42,7 @@ document.body.appendChild(myH1);
 or vice versa
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const subtitleElement = document.getElementById("subtitle")!;
 
@@ -63,7 +63,7 @@ const App = () => {
 The `html` object have feature parity with all the built-in HTML elements. All you need to do is to prefix the element name with `html.`.
 
 ```ts 
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 html.h1({ c: "Hello World!" }); // HTMLHeadingElement
 html.div({ c: "Hello World!" }); // HTMLDivElement
@@ -88,7 +88,7 @@ You can also use existing DOM elements as components using `hydrate`. This is us
 ```
 
 ```ts
-import { state, hydrate, use } from '@d-exclaimation/seraph'
+import { state, hydrate, use } from "@d-exclaimation/seraph";
 
 const $state = state("Hello world!");
 
@@ -124,7 +124,7 @@ type DefaultProps = {
 The `classes` prop is used to add CSS classes to the component. It can be a string or an array of strings.
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -144,7 +144,7 @@ Result in
 The `style` prop is used to add inline CSS styles to the component. 
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -167,7 +167,7 @@ Result in
 The `c` prop is used to add children to the component. It can be a string and HTMLElements or an array of strings and HTMLElements.
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.div({
@@ -197,7 +197,7 @@ Result in
 The `on` prop is used to add event listeners to the component. All events are using the same callback type as `addEventListener`.
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.div({
@@ -215,7 +215,7 @@ const App = () => {
 The `attr` prop is used to add any other attributes to the component. 
 
 ```ts
-import { html } from '@d-exclaimation/seraph'
+import { html } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.div({
@@ -237,7 +237,7 @@ Result in
 Components can be bound to state using the `use` function. This will automatically update the component properties when the state changes.
 
 ```ts
-import { html, state, use } from '@d-exclaimation/seraph'
+import { html, state, use } from "@d-exclaimation/seraph";
 
 const App = () => {
   const $count = state(0);
@@ -268,7 +268,7 @@ const App = () => {
 This means that you smartly use `use` to only update the component props that are actually changed, and even only passed certain states that you is relevant to the component.
 
 ```ts
-import { html, state, use } from '@d-exclaimation/seraph'
+import { html, state, use } from "@d-exclaimation/seraph";
 
 const App = () => {
   const $count = state(0);

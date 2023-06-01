@@ -56,7 +56,7 @@ $user.subscribe((state) => {
 This is the basic state function that can be used to create a state. It takes an initial value and return a state object.
 
 ```ts
-import { state } from '@d-exclaimation/seraph'
+import { state } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 
@@ -67,7 +67,7 @@ const $count = state(0);
 This is a function that can be used to run some code whenever the state changes. It takes a state and a callback function that will be called whenever the state changes.
 
 ```ts
-import { state, effect } from '@d-exclaimation/seraph'
+import { state, effect } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 
@@ -87,7 +87,7 @@ None :grin:.
 This is a function that can be used to create a computed state from another. It takes a callback function that will be called whenever the state changes to compute the new value.
 
 ```ts
-import { state, from } from '@d-exclaimation/seraph'
+import { state, from } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 
@@ -105,7 +105,7 @@ console.log($double.current); // 2
 This is a function that can be used to create a readonly zipped state from multiple states. Useful for creating a readonly state that depends on multiple states.
 
 ```ts
-import { state, zip } from '@d-exclaimation/seraph'
+import { state, zip } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 const $name = state("John Doe");
@@ -128,7 +128,7 @@ console.log($user.current); // [1, "Jane Doe"]
 This is a function that can be used to create a readonly combined object state from multiple states. Similar to `zip`, but instead of an array, it will return an object with the same keys as the states.
 
 ```ts
-import { state, all } from '@d-exclaimation/seraph'
+import { state, all } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 const $name = state("John Doe");
@@ -151,7 +151,7 @@ console.log($user.current); // { count: 1, name: "Jane Doe" }
 This is a function that can be used to create a readonly state from a data fetched logic. This is highly insipired by [@tanstack/query](https://tanstack.com/query/).
 
 ```ts
-import { query } from '@d-exclaimation/seraph'
+import { query } from "@d-exclaimation/seraph";
 
 const $query = query({
   queryFn: async () => {
@@ -173,15 +173,15 @@ const $query = query({
 This is a function that can be used to determine the progress of an action.
 
 ```ts
-import { transition, query, effect } from '@d-exclaimation/seraph'
+import { transition, query, effect } from "@d-exclaimation/seraph";
 
-const $isMutating = transition();
+const $mutation = transition();
 
 const $data = query({ ... });
 
-console.log($isMutating.current); // false
+console.log($mutation.current); // false
 
-$isMutating.start(async () => {
+$mutation.start(async () => {
   const res = await fetch("..."):
 
   if (!res.ok) {
@@ -191,24 +191,20 @@ $isMutating.start(async () => {
   $data.invalidate();
 });
 
-console.log($isMutating.current); // true
+console.log($mutation.current); // true
 
 // - After the fetch resolves
 
-console.log($isMutating.current); // false
+console.log($mutation.current); // false
 
 ```
 
 ### `mutable`
 
-::: danger Experimental
-This is an experimental feature. Mutable state is still being optimised as currently it uses `Proxy` which may have performance issues.
-:::
-
 This is a function that can be used to create a mutable object state. It takes an initial value and return a mutable state object.
 
 ```ts
-import { mutable } from '@d-exclaimation/seraph'
+import { mutable } from "@d-exclaimation/seraph";
 
 const $count = mutable({ count: 0 });
 
@@ -222,15 +218,15 @@ console.log($count.current); // { count: 1 }
 
 ### `memo`
 
-::: danger Experimental
-This is an experimental feature. Validating state changes is using `Object.is` which may not be enough for some cases.
+::: danger Beta
+This feature is currently still being heavily developed. Validating state changes is using `Object.is` which may not be enough for some cases and API may change in the future.
 :::
 
 This is a function that can be used to create a memoized state from another. It takes a callback function that will be called whenever the state changes to compute the new value. The callback function will only be called when the state changes, and the result will be cached.
 
 
 ```ts
-import { sr } from '@d-exclaimation/seraph'
+import { sr } from "@d-exclaimation/seraph";
 
 const $count = state(0);
 

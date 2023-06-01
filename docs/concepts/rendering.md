@@ -11,7 +11,7 @@ Seraph comes with some built-in utilities for rendering components to the DOM.
 You can do a simple mounting where a component will just be appended to the target element.
 
 ```ts
-import { html, mount } from '@d-exclaimation/seraph'
+import { html, mount } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -29,7 +29,7 @@ This can be useful if you are integrating Seraph into an existing application an
 You can also do a full rendering where the target element inner content will be replaced with the component.
 
 ```ts
-import { html, render } from '@d-exclaimation/seraph'
+import { html, render } from "@d-exclaimation/seraph";
 
 const App = () => {
   return html.h1({
@@ -53,7 +53,7 @@ To load data from a DOM element's `sr-props`, you need to explicitly call the `l
 ```
 
 ```ts
-import { load, html, use } from '@d-exclaimation/seraph'
+import { load, html, use } from "@d-exclaimation/seraph";
 
 const $props = load<{ count: number }>('count-data');
 
@@ -75,7 +75,7 @@ Loaded data may instead be stored a json script element. In this case, you can u
 ```
 
 ```ts
-import { resource } from '@d-exclaimation/seraph'
+import { resource } from "@d-exclaimation/seraph";
 
 const $props = resource<{ count: number }>('count-data');
 ```
@@ -130,7 +130,7 @@ You can combine `load` / `resouce` and `hydrate` to perform selective hydration 
 ```
 
 ```ts
-import { resource, state, from, zip, hydrate, html, use } from '@d-exclaimation/seraph'
+import { resource, state, from, zip, hydrate, html, use } from "@d-exclaimation/seraph";
 
 type Product = {
   id: number;
