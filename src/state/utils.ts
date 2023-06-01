@@ -73,23 +73,23 @@ export function zip<T extends State<unknown>[]>(
  * @param initial The initial value of the state object.
  * @returns The mutable state object.
  */
-export function mutable<T extends { [key: string | symbol]: unknown }>(
+export function mutable<T extends { [key: string | number | symbol]: unknown }>(
   initial: T
 ): State<T> {
   const $state = state(initial);
 
+  const proxy = new Proxy(initial, {
+    get: <K extends keyof T>(_: T, key: K) => $state.current[key],
+    set: <K extends keyof T>(_: T, key: K, value: T[K]) => {
+      $state.current[key] = value;
+      $state.current = $state.current;
+      return true;
+    },
+  });
+
   return {
     get current() {
-      return new Proxy($state.current, {
-        get: (_: T, key: keyof T) => {
-          return $state.current[key];
-        },
-        set: (_: T, key: keyof T, value: T[keyof T]) => {
-          $state.current[key] = value;
-          $state.current = $state.current;
-          return true;
-        },
-      });
+      return proxy;
     },
     set current(value) {
       $state.current = value;
