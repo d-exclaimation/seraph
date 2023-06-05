@@ -6,14 +6,16 @@
     <title>Seraph Playground</title>
   </head>
   <body
-    class="bg-amber-50 min-w-[100vw] min-h-[100vh] flex items-center justify-center"
+    class="bg-zinc-100 min-w-[100vw] min-h-[100vh] flex items-center justify-center"
   >
-    <script id="sr-sports-data" type="application/json">
+    <script id="user-data" type="application/json">
       {
-        "sports": ["Football", "Basketball", "Baseball", "Soccer"]
+        "name": "John Doe",
+        "email": "john@doe.com",
+        "date": "2021-01-01"
       }
     </script>
-    <div id="counter-app"></div>
+    <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

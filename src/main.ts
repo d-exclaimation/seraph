@@ -1,184 +1,166 @@
-import {
-  effect,
-  from,
-  html,
-  hydrate,
-  query,
-  resource,
-  state,
-  use,
-  zip,
-  type DefaultProps,
-} from "./seraph";
+import { effect, html, reduce, render, resource, use } from "./seraph";
 import "./style.css";
 
-const $allSportsQuery = query({
-  async queryFn() {
-    const res = await fetch("/sports.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    const raw = await res.json();
-    if (!Array.isArray(raw)) throw new Error("Invalid sports data");
-    return raw as string[];
+type User = {
+  name: string;
+  email: string;
+  date: string;
+};
+
+type Event = {
+  name: string;
+  start: Date;
+  end?: Date;
+};
+
+type EventAction =
+  | { for: "name"; value: string }
+  | { for: "start"; value: Date }
+  | { for: "end"; value: Date };
+
+const $user = resource("user-data", (raw) => {
+  const data = JSON.parse(raw);
+  if (typeof data !== "object") {
+    throw new Error("Invalid data");
+  }
+  if ("name" in data && "email" in data && "date" in data) {
+    return data as User;
+  }
+  throw new Error("Invalid data");
+});
+
+const $form = reduce<Event, EventAction>(
+  (state, action) => {
+    switch (action.for) {
+      case "name":
+        return { ...state, name: action.value };
+      case "start":
+        if (state.end && action.value > state.end) {
+          return state;
+        }
+        return { ...state, start: action.value };
+      case "end":
+        if (state.start > action.value) {
+          return state;
+        }
+        return { ...state, end: action.value };
+    }
   },
-  initial: [],
-  enabled: true,
-});
-
-const $allSports = from($allSportsQuery, (sports) =>
-  sports.status === "success" ? sports.data : []
+  {
+    name: "",
+    start: new Date(),
+    end: new Date(),
+  }
 );
-const $data = resource<{ sports: string[] }>("sr-sports-data");
-const $sports = state(new Set($data.current.sports));
-const $search = state("");
 
-const $recommended = from(zip($sports, $search), ([sports, search]) => {
-  if (search.trim().length < 3) return undefined;
-  return $allSports.current
-    .map((sport) => sport.trim())
-    .filter((sport) => !sports.has(sport))
-    .filter((sport) => sport.toLowerCase().includes(search.toLowerCase()))
-    .slice(0, 5);
+effect($user, (user) => {
+  console.log(user);
 });
 
-effect($allSports, (sports) => {
-  console.log("sports", sports);
-});
+export function component<
+  T extends { [k: string | symbol | number]: unknown } = {},
+  K extends HTMLElement = HTMLElement
+>(fn: (props: T) => K) {
+  return {
+    view: fn,
+  };
+}
 
-const Tag = (sport: string, click: () => void) => {
-  return html.span({
-    classes: [
-      "flex justify-between text-sm font-normal",
-      "px-3 py-1 w-full md:w-fit rounded-sm",
-      "text-black bg-amber-100 md:rounded-full",
-    ],
-    c: [
-      sport,
-      html.button({
-        classes: "ml-1 text-sm",
-        c: "✕",
-        on: { click },
-      }),
-    ],
-  });
+type TextFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  oninput: (value: string) => void;
 };
 
-const Dropdown = (to: HTMLElement, c: DefaultProps["c"]) => {
-  return html.div({
-    classes: "flex flex-col w-full items-center justify-start",
-    c: [
-      to,
-      html.div({
-        classes: "flex flex-col w-full",
-        c,
-      }),
-    ],
-  });
-};
-
-const RecommendedSports = (click: (sport: string) => void) => {
-  return html.div(
-    use($recommended, (recommended) => ({
-      classes: [
-        "absolute mt-2 flex flex-col w-64 min-w-[max-content]",
-        "items-start justify-start bg-white rounded gap-1 shadow-md h-max",
-        !recommended ? "py-[0px]" : "py-1",
+const TextField = component<TextFieldProps>(
+  ({ label, oninput, id, ...inputProps }) => {
+    return html.div({
+      classes: "flex w-full flex-col gap-1 items-start justify-center",
+      c: [
+        html.label({
+          classes: "text-sm font-bold",
+          c: label,
+          attr: {
+            for: id,
+          },
+        }),
+        html.input({
+          classes:
+            "outline-none select-none px-3 py-2 border border-zinc-600/30 rounded w-full",
+          attr: {
+            id,
+            ...inputProps,
+          },
+          on: {
+            input: (e) => {
+              oninput((e.target as HTMLInputElement).value);
+            },
+          },
+        }),
       ],
-      c: !recommended
-        ? []
-        : [
-            ...recommended.map((sport) =>
-              html.button({
-                classes:
-                  "text-base text-start px-3 py-1 text-sm text-black/60 hover:bg-slate-50 w-full",
-                c: sport,
-                on: {
-                  click: () => click(sport),
-                },
-              })
-            ),
-            html.button({
-              classes:
-                "text-base text-start px-3 py-1 text-sm text-black/40 hover:bg-slate-50 w-full",
-              c: `Add custom sport "${$search.current}"`,
-              on: {
-                click: () => click($search.current),
-              },
-            }),
-          ],
-    }))
-  );
-};
-
-const SearchBar = () => {
-  return html.input(
-    use($search, (search) => ({
-      classes: [
-        "px-3 py-1 text-sm md:text-base rounded-md w-full",
-        "outline-none select-none border-2 border-black/10",
-      ],
-      attr: {
-        placeholder: "Add a new favourite sport",
-        value: search,
-      },
-      on: {
-        input: (e) => ($search.current = (e.target as HTMLInputElement).value),
-      },
-    }))
-  );
-};
+    });
+  }
+);
 
 const App = () => {
-  return hydrate("counter-app", {
-    classes: [
-      "flex flex-col items-center justify-start shadow-lg bg-white",
-      "max-w-xl w-[90vw] h-[90vh] md:h-96 rounded-lg",
-    ],
-    c: [
-      // Heading
-      html.div({
-        classes: "flex w-full items-center py-4 justify-start px-6",
-        c: html.h2({
-          classes: "text-2xl font-bold text-black",
-          c: "Favourite sport",
+  return html.form(
+    use($form, ({ name, start, end }) => ({
+      classes:
+        "flex items-center justify-center h-max flex-col gap-2 min-w-[32rem] bg-white rounded shadow p-4",
+      c: [
+        html.h3({
+          classes: "text-xl font-bold",
+          c: `Create an event${name ? ` '${name}'` : ""}`,
         }),
-      }),
 
-      // Search bar
-      html.div({
-        classes: "flex w-full items-center justify-start px-4 gap-1",
-        c: [
-          Dropdown(
-            SearchBar(),
-            RecommendedSports((sport) => {
-              $sports.current.add(sport);
-              $sports.current = $sports.current;
-              $search.current = "";
-            })
-          ),
-        ],
-      }),
+        TextField.view({
+          id: "name",
+          label: "Event name",
+          value: name,
+          oninput: (value) =>
+            $form.dispatch({
+              for: "name",
+              value,
+            }),
+        }),
 
-      // Tags
-      html.div(
-        use($sports, (sports) => ({
-          classes: [
-            "flex flex-col sm:flex-row sm:flex-wrap w-full max-h-full overflow-y-auto",
-            "items-start sm:items-center justify-start px-4 my-4 gap-2",
-          ],
-          c: [...sports].map((sport) =>
-            Tag(sport, () => {
-              $sports.current.delete(sport);
-              $sports.current = $sports.current;
-            })
-          ),
-        }))
-      ),
-    ],
-  });
+        html.input({
+          classes:
+            "outline-none select-none px-3 py-2 border border-zinc-600/30 rounded w-full",
+          attr: {
+            type: "datetime-local",
+            value: start.toISOString().slice(0, 16),
+          },
+          on: {
+            input: (e) => {
+              $form.dispatch({
+                for: "start",
+                value: new Date((e.target as HTMLInputElement).value),
+              });
+            },
+          },
+        }),
+        html.input({
+          classes:
+            "outline-none select-none px-3 py-2 border border-zinc-600/30 rounded w-full",
+          attr: {
+            type: "datetime-local",
+            value: end?.toISOString().slice(0, 16),
+          },
+          on: {
+            input: (e) => {
+              $form.dispatch({
+                for: "end",
+                value: new Date((e.target as HTMLInputElement).value),
+              });
+            },
+          },
+        }),
+      ],
+    }))
+  );
 };
 
-App();
+render(App(), document.getElementById("app")!);

@@ -120,3 +120,28 @@ export function transition(): State<boolean> & {
     },
   };
 }
+
+/**
+ * Creates a reducer-style state that changes its value based on an action.
+ * @param fn The reducer function.
+ * @param initial The initial value of the state object.
+ * @returns The reducer state object.
+ */
+export function reduce<T, A>(
+  fn: (state: T, action: A) => T,
+  initial: T
+): State<T> & { dispatch: (action: A) => void } {
+  const $state = state<T>(initial);
+
+  const dispatch = (action: A) => {
+    $state.current = fn($state.current, action);
+  };
+
+  return {
+    dispatch,
+    subscribe: $state.subscribe.bind($state),
+    get current() {
+      return $state.current;
+    },
+  };
+}
