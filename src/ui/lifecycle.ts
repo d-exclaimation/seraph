@@ -5,32 +5,18 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { type State } from "../state";
-import { apply, type DefaultProps } from "./core";
+import { isstate, type State } from "../state";
 
 /**
- * Use a state to compute a component's properties
- * @param state The state.
- * @param create The function to create the properties.
- * @returns The function to create the component.
+ * Applies a state or value to a function.
+ * @param state The state or value
+ * @param fn The function to apply to.
+ * @returns The unsubscribe function.
  */
-export function use<T>(
-  state: State<T>,
-  create: (value: T) => DefaultProps
-): (parent: HTMLElement) => DefaultProps {
-  return (parent) => {
-    const props = create(state.current);
-    state.subscribe((value) => {
-      const newProps = create(value);
-      if (newProps.on !== undefined || props.on !== undefined) {
-        Object.entries(props.on ?? {}).forEach(([key, value]) => {
-          parent.removeEventListener(key, value);
-        });
-        props.on = newProps.on;
-      }
-      apply(parent, newProps);
-    });
-
-    return props;
-  };
+export function into<T>(state: State<T> | T, fn: (current: T) => void) {
+  if (isstate(state)) {
+    return state.subscribe(fn);
+  }
+  fn(state);
+  return () => {};
 }

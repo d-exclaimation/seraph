@@ -19,6 +19,7 @@ export function state<T>(state: T): State<T> {
   const listeners = new Set<(curr: T) => void>();
 
   return {
+    __kind: "state",
     get current() {
       return data.current;
     },
@@ -42,6 +43,8 @@ export function state<T>(state: T): State<T> {
  */
 export function from<T, K>(state: State<T>, compute: (curr: T) => K): State<K> {
   return {
+    __kind: "state",
+
     get current() {
       return compute(state.current);
     },
@@ -74,6 +77,7 @@ export function memo<T, K>(state: State<T>, compute: (curr: T) => K): State<K> {
   };
 
   return {
+    __kind: "state",
     get current() {
       if (
         memoised.current !== undefined &&

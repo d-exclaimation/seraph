@@ -1,5 +1,11 @@
 export type State<T> = {
   /**
+   * The kind of state.
+   * @internal
+   */
+  __kind: "state";
+
+  /**
    * The current state.
    */
   current: T;

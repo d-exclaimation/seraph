@@ -136,6 +136,7 @@ export function query<T>({
   }, 0);
 
   return {
+    __kind: "state",
     get current() {
       return result.current;
     },
