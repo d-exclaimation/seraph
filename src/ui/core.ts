@@ -57,17 +57,6 @@ export type BaseProps = {
 };
 
 /**
- * Component properties.
- */
-export type DefaultProps = {
-  classes?: string | string[];
-  style?: Partial<CSSStyleDeclaration>;
-  c?: Arrayable<HTMLElement | string>;
-  on?: Partial<Record<keyof HTMLElementEventMap, (e: Event) => void>>;
-  attr?: Record<string, any>;
-};
-
-/**
  * Applies properties to a component.
  * @param elem The component.
  * @param props The properties.
