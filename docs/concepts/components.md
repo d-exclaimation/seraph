@@ -17,7 +17,7 @@ const App = component(() => {
   });
 });
 
-const myH1 = App.view(); // HTMLHeadingElement
+const myH1 = App.view({}); // HTMLHeadingElement
 
 ```
 
@@ -82,7 +82,7 @@ const Header = component(() => {
 const App = component(() => {
   return html.div({
     c: [
-      Header.view(),
+      Header.view({}),
       html.p({
         c: "This is a paragraph"
       })
@@ -147,7 +147,7 @@ The `classes` prop is used to add CSS classes to the component. It can be a stri
 import { html } from "@d-exclaimation/seraph";
 
 html.h1({
-  classes: ["text-2xl", "font-bold"] // [!code ++]
+  classes: "text-2xl font-bold" // [!code ++]
 });
 ```
 

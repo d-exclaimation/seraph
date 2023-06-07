@@ -71,7 +71,7 @@ App.render({}, document.getElementById("app")!);
 Seraph state is a reactive variable that can be used to store data and emit update the data changes. 
 
 ::: tip State and Components
-Seraph's state is not bounded the component scope. Components instead have to explicitly subscribe to the state changes using the `use` function.
+Seraph's state is not bounded the component scope. Components instead have to explicitly subscribe to the state changes by setting one of the component's property to the state.
 
 This allows us to create state that can be shared across multiple components, and smartly bind only the components that need to be updated when the state changes.
 :::
