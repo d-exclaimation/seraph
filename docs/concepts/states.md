@@ -13,6 +13,11 @@ The type definition of a state is:
 ```ts
 type State<T> = {
   /**
+   * This is an internal property that is used to identify a state.
+   */
+  __kind: "state";
+
+  /**
    * The current state.
    */
   current: T;
@@ -144,6 +149,60 @@ console.log($user.current); // { count: 1, name: "John Doe" }
 $name.current = "Jane Doe";
 
 console.log($user.current); // { count: 1, name: "Jane Doe" }
+```
+
+### `reducer`
+
+This is a function that can be used to create a reducer state. It takes a reducer function and an initial value.
+
+```ts
+import { reducer } from "@d-exclaimation/seraph";
+
+const $count = reducer((state, action) => {
+  switch (action.type) {
+    case "increment":
+      return state + 1;
+    case "decrement":
+      return state - 1;
+    default:
+      return state;
+  }
+}, 0);
+
+console.log($count.current); // 0
+
+$count.dispatch({ type: "increment" });
+
+console.log($count.current); // 1
+
+$count.dispatch({ type: "decrement" });
+
+console.log($count.current); // 0
+```
+
+### `derive`
+
+Similar to `from`, but instead of a readonly state, it will return a mutable state.
+
+```ts
+import { state, derive } from "@d-exclaimation/seraph";
+
+const $user = state({
+  name: "John Doe",
+  age: 20,
+});
+
+const $name = derive($user, {
+  get: (user) => user.name,
+  set: (name, user) => ({ ...user, name }),
+});
+
+console.log($name.current); // "John Doe"
+
+$name.current = "Jane Doe";
+
+console.log($name.current); // "Jane Doe"
+console.log($user.current); // { name: "Jane Doe", age: 20 }
 ```
 
 ### `query`

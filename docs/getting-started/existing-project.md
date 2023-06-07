@@ -61,17 +61,14 @@ You can add Seraph to your project without using npm or any other package manage
   </body>
 
   <script type="module">
-    import { state, hydrate, use } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
+    import { state, hydrate, from } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
 
     const $count = state(10);  // [!code ++]
 
-    hydrate(  // [!code ++]
-      "count-number",  // [!code ++]
-      use($count, (count) => ({  // [!code ++]
-        classes: "count-number",  // [!code ++]
-        c: `${count}`, // [!code ++]
-      }))  // [!code ++]
-    );  // [!code ++]
+    hydrate("count-number", {  // [!code ++]
+      classes: "count-number",  // [!code ++]
+      c: from($count, (count) => `${count}`), // [!code ++]
+    });  // [!code ++]
 
     hydrate("btn-dec", {  // [!code ++]
       c: "Decrement",  // [!code ++]
@@ -120,33 +117,27 @@ Let's say we want to add a feature where:
   </body>
 
   <script type="module">
-    import { state, hydrate, use } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; 
+    import { state, hydrate, from } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; 
 
     const $count = state(10);
 
-    hydrate(
-      "count-number",
-      use($count, (count) => ({
-        classes: "count-number",
-        style: {  // [!code ++]
-          color: count % 2 === 0 ? "blue" : "green",  // [!code ++]
-        },  // [!code ++]
-        c: `${count}`,
-      }))
-    );
+    hydrate("count-number", {
+      classes: "count-number",
+      style: {
+        color: from($count, (count) => count % 2 === 0 ? "blue" : "green"), // [!code ++]
+      },
+      c: from($count, (count) => `${count}`),
+    });
 
-    hydrate(
-      "btn-dec",
-      use($count, (count) => ({ // [!code ++]
-        c: "Decrement",
-        on: {
-          click: () => ($count.current--),
-        }, 
-        attr: { // [!code ++]
-          disabled: count === 0,  // [!code ++]
-        } // [!code ++]
-      }))
-    );
+    hydrate("btn-dec", {
+      c: "Decrement",
+      on: {
+        click: () => ($count.current--),
+      },
+      attr: {
+        disabled: from($count, (count) => count === 0), // [!code ++]
+      }
+    });
 
     hydrate("btn-inc", {
       c: "Increment",
@@ -177,7 +168,7 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
   </body>
 
   <script type="module">
-    import { state, from, html, use, zip, render } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
+    import { state, from, html, component, zip } from "https://cdn.skypack.dev/@d-exclaimation/seraph";
 
     const $board = state([
       ["_", "_", "_"],
@@ -225,20 +216,20 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
       }
     };
 
-    const Game = () => {
+    const Game = component(() => {
       return html.div({
         classes: "board",
         c: [
-          html.div(
-            use(zip($winner, $turn), ([winner, turn]) => ({
-              classes: "board-status",
-              c: winner ? `Winner: ${winner}` : `Next player: ${turn}`,
-            }))
-          ),
-          html.div(
-            use($board, (board) => ({
-              classes: "board-grid",
-              c: board.map((row, i) =>
+          html.div({
+            classes: "board-status",
+            c: from(zip($winner, $turn), ([winner, turn]) => 
+              winner ? `Winner: ${winner}` : `Next player: ${turn}`,
+            )
+          }),
+          html.div({
+            classes: "board-grid",
+            c: from($board, (board) =>
+              board.map((row, i) =>
                 html.div({
                   classes: "board-row",
                   c: row.map((col, j) =>
@@ -250,14 +241,14 @@ Let's say now we want the application to be tic-tac-toe game. With Seraph, we ca
                   ),
                 })
               ),
-            }))
-          ),
+            )
+          }),
         ],
       });
-    };
+    });
 
-    render(
-      Game(),
+    Game.render(
+      {},
       document.getElementById("tic-tac-toe")!
     );
   </script>

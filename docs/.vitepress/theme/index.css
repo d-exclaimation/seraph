@@ -36,14 +36,14 @@
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    #79C7FC 30%,
-    #7584FF
+    rgb(121, 199, 252) 30%,
+    rgb(117, 132, 255)
   );
-  /* --vp-home-hero-image-background-image: linear-gradient(
+  --vp-home-hero-image-background-image: linear-gradient(
     -45deg,
-    #A8D0DB 50%,
-    #EF798A 50%
-  ); */
+    rgb(204, 236, 249) 30%,
+    rgb(211, 235, 246)
+  );
   --vp-home-hero-image-filter: blur(40px);
 }
 
@@ -73,6 +73,11 @@
   --vp-custom-block-tip-border: var(--vp-c-brand);
   --vp-custom-block-tip-text: var(--vp-c-brand-lightest);
   --vp-custom-block-tip-bg: var(--vp-c-brand-dimm);
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    rgb(54, 63, 66) 30%,
+    rgb(70, 77, 81)
+  );
 }
 
 /**
