@@ -1,7 +1,7 @@
 # Introduction
 
-::: warning Early Development
-Seraph is still in early development, and is not yet ready for production use.
+::: warning Beta
+Seraph is still in beta, so there's still likely some bugs, and the API is still subject to change.
 :::
 
 ## Overview
