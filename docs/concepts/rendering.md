@@ -4,6 +4,23 @@ Seraph comes with some built-in utilities for rendering components to the DOM.
 
 [[toc]]
 
+## Component pre-built functions
+
+By default, all components (declared with `component`) have a `mount` and `render` function that can be used to render the component to the DOM.
+
+```ts
+import { html, component } from "@d-exclaimation/seraph";
+
+const App = component(() => {
+  return html.h1({
+    c: "Hello World!"
+  });
+});
+
+App.mount(document.getElementById("app")!);
+App.render(document.getElementById("app")!);
+```
+
 ## Simple rendering
 
 ### `mount`
@@ -130,7 +147,7 @@ You can combine `load` / `resouce` and `hydrate` to perform selective hydration 
 ```
 
 ```ts
-import { resource, state, from, zip, hydrate, html, use } from "@d-exclaimation/seraph";
+import { resource, state, from, zip, hydrate, html, reducer } from "@d-exclaimation/seraph";
 
 type Product = {
   id: number;
@@ -141,16 +158,23 @@ type Product = {
 };
 
 const $product = resource<Product>('__server_data');
-const $index = state(0);
-const $image = from(zip($product, $index), ({ images }, i) => images[i]);
+const $index = reducer(
+  (state: number, action: "inc" | "dec") => {
+    if (action === "inc") {
+      return Math.min($product.images.length, state + 1);
+    }
+    return Math.max(0, state - 1);
+  },
+  0
+);
+const $image = from(zip($product, $index), ([{ images }, i]) => images[i]);
+const $src = from($image, (image) => image.url);
 
 hydrate("image-carousel", {
   class: "carousel",
   c: [
-    html.img(
-      use($image, (image) => ({
-        src: image.url,
-      }))
+    html.img({
+      attr: { src: $src }
     }),
     html.div({
       class: "carousel-actions",
@@ -158,12 +182,12 @@ hydrate("image-carousel", {
         html.button({
           class: "carousel-action-prev",
           c: "Prev",
-          on: { click: () => ($index.current = Math.max($index.current - 1, 0)) },
+          on: { click: () => $index.dispatch("dec") },
         }),
         html.button({
           class: "carousel-action-next",
           c: "Next",
-          on: { click: () => ($index.current = Math.min($index.current + 1, $product.current.images.length - 1)) },
+          on: { click: () => $index.dispatch("inc") },
         }),
       ],
     }),

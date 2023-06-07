@@ -189,19 +189,4 @@ describe("Create component", () => {
     expect(elem.getAttribute("data-test")).toBe("test");
     expect(elem.innerHTML).toBe("test");
   });
-
-  it("Should create element with props function", ({ expect }) => {
-    const elem = create("div", () => ({
-      classes: ["a", "b"],
-      style: { color: "red" },
-      attr: { "data-test": "test" },
-      c: ["test"],
-    }));
-
-    expect(elem.classList.contains("a")).toBe(true);
-    expect(elem.classList.contains("b")).toBe(true);
-    expect(elem.style.color).toBe("red");
-    expect(elem.getAttribute("data-test")).toBe("test");
-    expect(elem.innerHTML).toBe("test");
-  });
 });

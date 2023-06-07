@@ -27,15 +27,15 @@ npm install @d-exclaimation/seraph
 Let's start simple, create a new component called `HelloWorld`:
 
 ```ts
-import { html, render } from "@d-exclaimation/seraph";
+import { html, component } from "@d-exclaimation/seraph";
 
-const App = () => {
+const App = component(() => {
   return html.h1({
     c: "Hello World!"
   });
-}
+});
 
-render(App(), document.getElementById("app"));
+App.render({}, document.getElementById("app")!);
 ```
 This will render a simple `Hello World!` h1 element to under the `app` element in your HTML.
 
@@ -45,18 +45,16 @@ Let's spice things up a bit by adding some interactivity to our component. We'll
 
 
 ```ts{6-20}
-import { html, render, state, use } from "@d-exclaimation/seraph"; // [!code ++]
+import { html, component, state, from } from "@d-exclaimation/seraph"; // [!code ++]
 
-const App = () => {
+const App = component(() => {
   const $count = state(0); // [!code ++]
 
   return html.div({
     c: [
-      html.h1(
-        use($count, count => ({ // [!code ++]
-          c: `Hello World! ${count}` // [!code ++]
-        })) // [!code ++]
-      ),
+      html.h1({
+        c: from($count, (count) => `Counting ${count}x`) // [!code ++]
+      }),
       html.button({
         c: "Click me!",
         on: {
@@ -65,9 +63,9 @@ const App = () => {
       }),
     ]
   });
-};
+});
 
-render(App(), document.getElementById("app"));
+App.render({}, document.getElementById("app")!);
 ```
 
 Seraph state is a reactive variable that can be used to store data and emit update the data changes. 
@@ -85,31 +83,29 @@ To change the state, we only need to reassign the state's `current` property. In
 We can use the `effect` function to run some code whenever the state changes. Let's add a `console.log` whenever the state changes:
 
 ```ts
-import { html, render, state, use, effect } from "@d-exclaimation/seraph"; // [!code ++]
+import { html, component, state, from, effect } from "@d-exclaimation/seraph"; // [!code ++]
 
-const App = () => {
-  const $count = state(0);
+const App = component(() => {
+  const $count = state(0); 
 
   effect($count, count => console.log(count)); // [!code ++]
 
   return html.div({
     c: [
-      html.h1(
-        use($count, count => ({
-          c: `Hello World! ${count}`
-        }))
-      ),
+      html.h1({
+        c: from($count, (count) => `Counting ${count}x`) 
+      }),
       html.button({
         c: "Click me!",
         on: {
-          click: () => ($count.current ++)
+          click: () => ($count.current ++) 
         }
       }),
     ]
   });
-};
+});
 
-render(App(), document.getElementById("app"));
+App.render({}, document.getElementById("app")!);
 ```
 
 <div class="tip custom-block" style="padding-top: 8px">

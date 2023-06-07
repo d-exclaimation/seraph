@@ -16,6 +16,7 @@ import { state } from "./core";
 export function reducer<T, A>(reducer: (state: T, action: A) => T, initial: T) {
   const $store = state(initial);
   return {
+    __kind: "state",
     get current() {
       return $store.current;
     },

@@ -20,14 +20,14 @@
     "partial hydration"
   ],
   "type": "module",
-  "main": "dist/seraph.cjs",
-  "module": "dist/seraph.js",
-  "types": "dist/seraph.d.ts",
+  "main": "dist/export.cjs",
+  "module": "dist/export.js",
+  "types": "dist/export.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/seraph.js",
-      "require": "./dist/seraph.cjs",
-      "types": "./dist/seraph.d.ts"
+      "import": "./dist/export.js",
+      "require": "./dist/export.cjs",
+      "types": "./dist/export.d.ts"
     },
     "./package.json": "./package.json"
   },

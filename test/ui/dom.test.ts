@@ -95,12 +95,12 @@ describe("DOM hydrating", () => {
   });
 
   it("Should hydrate element with function", ({ expect }) => {
-    hydrate("target", ({ className }) => ({
-      classes: [className, "a", "b"],
+    hydrate("target", {
+      classes: ["a", "b"],
       style: { color: "red" },
       attr: { "data-test": "test" },
       c: ["test"],
-    }));
+    });
 
     const result = document.getElementById("target");
     expect(result).not.toBeNull();

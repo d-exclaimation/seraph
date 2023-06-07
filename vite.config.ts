@@ -6,10 +6,10 @@ export default defineConfig({
     target: "esnext",
     minify: false,
     lib: {
-      entry: "src/seraph.ts",
+      entry: "src/export.ts",
       name: "index",
       formats: ["es", "cjs"],
-      fileName: "seraph",
+      fileName: "export",
     },
   },
   server: {
