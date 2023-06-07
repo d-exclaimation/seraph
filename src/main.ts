@@ -1,38 +1,15 @@
 import "./export";
-import { State, from, html, memo, resource, state } from "./seraph";
+import {
+  State,
+  component,
+  derive as experimental_derive,
+  from,
+  html,
+  memo,
+  resource,
+  state,
+} from "./seraph";
 import "./style.css";
-
-export function experimental_derive<T, K>(
-  state: State<T>,
-  proxy: { get: (state: T) => K; set: (change: K, current: T) => T }
-): State<K> {
-  return {
-    __kind: "state",
-    get current() {
-      return proxy.get(state.current);
-    },
-    set current(change) {
-      state.current = proxy.set(change, state.current);
-    },
-    subscribe(fn) {
-      return state.subscribe(() => fn(proxy.get(state.current)));
-    },
-  };
-}
-
-export function component<
-  T extends { [k: string | symbol | number]: unknown } = {},
-  K extends HTMLElement = HTMLElement
->(fn: (props: T) => K) {
-  return {
-    view: fn,
-    render: (props: T, parent: HTMLElement) => {
-      parent.appendChild(fn(props));
-    },
-  };
-}
-
-// --
 
 type User = {
   name: string;

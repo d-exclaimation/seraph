@@ -140,3 +140,27 @@ export function transition(): State<boolean> & {
     },
   };
 }
+
+/**
+ * Creates a state object that is a proxy of another state object.
+ * @param state The state object to proxy.
+ * @param proxy The proxy object.
+ * @returns The proxied state object.
+ */
+export function derive<T, K>(
+  state: State<T>,
+  proxy: { get: (state: T) => K; set: (change: K, current: T) => T }
+): State<K> {
+  return {
+    __kind: "state",
+    get current() {
+      return proxy.get(state.current);
+    },
+    set current(change) {
+      state.current = proxy.set(change, state.current);
+    },
+    subscribe(fn) {
+      return state.subscribe(() => fn(proxy.get(state.current)));
+    },
+  };
+}
