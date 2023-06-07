@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { apply, type DefaultProps } from "./core";
+import { apply, type BaseProps } from "./core";
 
 /**
  * Mount a component to a parent.
@@ -38,11 +38,8 @@ export function render<
  * @param props The properties.
  * @returns The component.
  */
-export function hydrate<T extends HTMLElement>(
-  id: string,
-  props: DefaultProps | ((parent: HTMLElement) => DefaultProps)
-) {
+export function hydrate<T extends HTMLElement>(id: string, props: BaseProps) {
   const elem = document.getElementById(id) as T;
-  apply(elem, typeof props === "function" ? props(elem) : props);
+  apply(elem, props);
   return elem;
 }

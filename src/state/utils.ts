@@ -8,6 +8,11 @@
 import { state } from "./core";
 import { type All, type State, type Zipped } from "./types";
 
+/**
+ * Creates a state object that is a combination of other state objects.
+ * @param state The state object to zip.
+ * @returns True if the state object is a state object.
+ */
 export function isstate<T>(state: State<T> | T): state is State<T>;
 export function isstate(state: unknown): state is State<unknown>;
 export function isstate(state: any): state is State<any> {

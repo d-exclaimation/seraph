@@ -74,15 +74,15 @@ export function memo<T, K>(state: State<T>, compute: (curr: T) => K): State<K> {
       this.prev = state.current;
       return newValue;
     },
+    same() {
+      return Object.is(this.prev, state.current);
+    },
   };
 
   return {
     __kind: "state",
     get current() {
-      if (
-        memoised.current !== undefined &&
-        Object.is(memoised.prev, state.current)
-      ) {
+      if (memoised.current !== undefined && memoised.same()) {
         return memoised.current;
       }
       return memoised.recompute();
