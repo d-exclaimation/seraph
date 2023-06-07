@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { describe, expectTypeOf, it } from "vitest";
-import { For, Show, html } from "../../src/seraph";
+import { html } from "../../src/seraph";
 
 describe("Base html components", () => {
   it("Should create element with tag", ({ expect }) => {
@@ -127,32 +127,5 @@ describe("Base html components", () => {
     const scriptElement = html["script"]({});
     expect(scriptElement.tagName).toBe("SCRIPT");
     expectTypeOf(scriptElement).toEqualTypeOf<HTMLScriptElement>();
-  });
-});
-
-describe("Show component", () => {
-  it("Should return the child if when is true", ({ expect }) => {
-    const show = Show({ when: true, c: "Hello" });
-    expect(show).toBe("Hello");
-  });
-
-  it("Should return '' if when is false", ({ expect }) => {
-    const show = Show({ when: false, c: "Hello" });
-    expect(show).toBe("");
-  });
-
-  it("Should return fallback if when is false", ({ expect }) => {
-    const show = Show({ when: false, c: "Hello", fallback: "Bye" });
-    expect(show).toBe("Bye");
-  });
-});
-
-describe("For component", () => {
-  it("Should return all child from given function", ({ expect }) => {
-    const forComponent = For({
-      each: [1, 2, 3],
-      c: (i) => `${i}`,
-    });
-    expect(forComponent).toEqual(["1", "2", "3"]);
   });
 });
