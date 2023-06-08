@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, it } from "vitest";
-import { load, resource } from "../../src/seraph";
+import { load, resource } from "../../src/export";
 
 describe("Load SSR props", () => {
   afterEach(() => {

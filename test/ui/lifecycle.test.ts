@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, it } from "vitest";
-import { html, state } from "../../src/seraph";
+import { html, state } from "../../src/export";
 
 describe("Lifecycle bindings", () => {
   const $test = state("");

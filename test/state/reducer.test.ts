@@ -6,7 +6,7 @@
 //
 
 import { beforeEach, describe, expectTypeOf, it, vi } from "vitest";
-import { Inner, effect, reducer } from "../../src/seraph";
+import { Inner, effect, reducer } from "../../src/export";
 
 type CalcState = { count: number };
 type CalcAction =

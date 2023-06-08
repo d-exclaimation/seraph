@@ -1,16 +1,27 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   build: {
     target: "esnext",
     minify: false,
     lib: {
-      entry: "src/export.ts",
-      name: "index",
+      entry: {
+        index: "src/export.ts",
+        router: "src/router/export.ts",
+      },
+      name: "seraph",
       formats: ["es", "cjs"],
-      fileName: "export",
+      fileName: (format, entryName) => {
+        const extension = format === "es" ? ".js" : ".cjs";
+        if (entryName === "index") {
+          return `export${extension}`;
+        }
+        return `router/export${extension}`;
+      },
     },
+    copyPublicDir: false,
   },
   server: {
     port: 3000,
@@ -19,4 +30,5 @@ export default defineConfig({
     testTimeout: 60_000,
     hookTimeout: 60_000,
   },
+  plugins: [tsconfigPaths()],
 });

@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { describe, expectTypeOf, it } from "vitest";
-import { html } from "../../src/seraph";
+import { html } from "../../src/export";
 
 describe("Base html components", () => {
   it("Should create element with tag", ({ expect }) => {

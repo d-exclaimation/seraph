@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, it } from "vitest";
-import { html, hydrate, mount, render } from "../../src/seraph";
+import { html, hydrate, mount, render } from "../../src/export";
 
 describe("DOM rendering", () => {
   afterEach(() => {

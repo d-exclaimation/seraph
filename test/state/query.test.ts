@@ -6,7 +6,7 @@
 //
 
 import { describe, it, vi } from "vitest";
-import { QueryResult, effect, query } from "../../src/seraph";
+import { QueryResult, effect, query } from "../../src/export";
 
 describe("Query states", () => {
   it("Should start with idle status", ({ expect }) => {
