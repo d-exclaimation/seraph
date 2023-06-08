@@ -6,11 +6,21 @@ export default defineConfig({
     target: "esnext",
     minify: false,
     lib: {
-      entry: "src/export.ts",
-      name: "index",
+      entry: {
+        index: "src/export.ts",
+        router: "src/router/export.ts",
+      },
+      name: "seraph",
       formats: ["es", "cjs"],
-      fileName: "export",
+      fileName: (format, entryName) => {
+        const extension = format === "es" ? ".js" : ".cjs";
+        if (entryName === "index") {
+          return `export${extension}`;
+        }
+        return `router/export${extension}`;
+      },
     },
+    copyPublicDir: false,
   },
   server: {
     port: 3000,

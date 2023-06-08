@@ -1,0 +1,8 @@
+{
+  "name": "@d-exclaimation/seraph/router",
+  "type": "module",
+  "module": "../dist/router/export.js",
+  "main": "../dist/router/export.cjs",
+  "types": "../dist/router/export.d.ts",
+  "sideEffects": false
+}

@@ -29,6 +29,11 @@
       "require": "./dist/export.cjs",
       "types": "./dist/export.d.ts"
     },
+    "./router": {
+      "import": "./dist/router/export.js",
+      "require": "./dist/router/export.cjs",
+      "types": "./dist/router/export.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [
