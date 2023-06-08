@@ -1,5 +1,5 @@
-import { route } from "../router/routing";
-import { component, html } from "../ui";
+import { component, html } from "@lib/core";
+import { route } from "@lib/router";
 import { router } from "./_context";
 import NotFound from "./pages/404";
 import Counter from "./pages/counter";

@@ -1,5 +1,4 @@
-import { from, state, type State } from "../../state";
-import { component, html } from "../../ui";
+import { component, from, html, state, type State } from "@lib/core";
 
 type SwitchProps = {
   $checked: State<boolean>;

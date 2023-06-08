@@ -1,5 +1,4 @@
-import { derive, from, state, type State } from "../../state";
-import { component, html } from "../../ui";
+import { component, derive, from, html, state, type State } from "@lib/core";
 import { router } from "../_context";
 
 type OAuthProps = {

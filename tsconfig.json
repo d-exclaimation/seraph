@@ -15,7 +15,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/core": ["./src/export.ts"],
+      "@lib/router": ["./src/router/export.ts"],
+    }
   },
   "include": ["src"]
 }

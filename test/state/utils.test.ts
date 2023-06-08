@@ -15,7 +15,7 @@ import {
   zip,
   type Inner,
   type State,
-} from "../../src/seraph";
+} from "../../src/export";
 
 describe("Zipped states", () => {
   const $simple = state(1);

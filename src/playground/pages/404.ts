@@ -1,4 +1,4 @@
-import { component, html } from "../../ui";
+import { component, html } from "@lib/core";
 
 export default component(() =>
   html.div({

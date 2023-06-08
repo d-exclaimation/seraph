@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   build: {
@@ -29,4 +30,5 @@ export default defineConfig({
     testTimeout: 60_000,
     hookTimeout: 60_000,
   },
+  plugins: [tsconfigPaths()],
 });

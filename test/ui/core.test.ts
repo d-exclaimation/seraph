@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expectTypeOf, it, vi } from "vitest";
-import { apply, create } from "../../src/seraph";
+import { apply, create } from "../../src/export";
 
 describe("Apply props", () => {
   afterEach(() => {

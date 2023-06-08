@@ -6,7 +6,7 @@
 //
 
 import { beforeEach, describe, expectTypeOf, it, vi } from "vitest";
-import { Inner, State, effect, from, memo, state } from "../../src/seraph";
+import { Inner, State, effect, from, memo, state } from "../../src/export";
 
 describe("State primitives", () => {
   const $simple = state(0);

@@ -1,5 +1,4 @@
-import { from } from "../../state";
-import { component, html } from "../../ui";
+import { component, from, html } from "@lib/core";
 import { $count } from "../_context";
 
 type ChartBarProps = {
