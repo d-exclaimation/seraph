@@ -176,6 +176,57 @@ export function browser(): BrowserRouter {
   };
 }
 
+/**
+ * Browser SPA-style Router
+ * @property $history - History state
+ * @property $href - Current href state
+ * @property $search - Current search params state
+ * @property $path - Current path state
+ * @property link - Router link component using this router
+ * @property navigate - Router navigate component using this router
+ * @property provider - Router provider component using this router
+ */
+export type HashRouter = Router & {
+  /**
+   * History state
+   */
+  $history: History;
+  /**
+   * Current search params state
+   */
+  $search: State<URLSearchParams>;
+};
+
+export function hash() {
+  const $history = history();
+  const $component = from($history, (history) => {
+    const hash = history.url.hash || "#";
+    const fullpath = decodeURIComponent(hash.slice(1));
+    const [path, search] = fullpath.split("?");
+    return {
+      path: path.startsWith("/") ? path : `/${path}`,
+      search: new URLSearchParams(search),
+    };
+  });
+  const $path = from($component, (component) => component.path);
+  const $search = from($component, (component) => component.search);
+
+  return {
+    $history,
+    $search,
+    $path,
+    goto: (target: string, replace?: boolean) =>
+      $history.navigate(`#${target}`, replace),
+    link: (props: LinkProps) =>
+      link($history, { ...props, href: `#${props.href}` }),
+    navigate: (props: NavigateProps) =>
+      navigate($history, { ...props, href: `#${props.href}` }),
+    provider: <T extends BaseRouterConfig>(config: T) =>
+      provider({ $path }, config),
+  };
+}
+
 export const routing = {
   browser,
+  hash,
 } as const;

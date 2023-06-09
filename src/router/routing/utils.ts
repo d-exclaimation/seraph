@@ -75,6 +75,11 @@ export type ParamsProps<
   ? Result & { [K in Param]: string }
   : Result;
 
+/**
+ * Route object
+ * @property path - Path string
+ * @property component - Component to render taking in the params if any
+ */
 export type Route<T extends string, P, K> = {
   path: T;
   component: (props: P) => K;
