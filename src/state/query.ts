@@ -9,9 +9,9 @@ import { state } from "./core";
 import { type State } from "./types";
 
 /**
- * A data fetching state.
+ * An async result value.
  */
-export type QueryResult<T> =
+export type AsyncResult<T> =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "error"; error: unknown }
@@ -20,7 +20,7 @@ export type QueryResult<T> =
 /**
  * A state object that represents a query.
  */
-export type QueryState<T> = State<QueryResult<T>> & {
+export type QueryState<T> = State<AsyncResult<T>> & {
   /**
    * Refetch the query, reload the data
    */
@@ -104,7 +104,7 @@ export function query<T>({
   on,
   retry,
 }: QueryArgs<T>): QueryState<T> {
-  const result = state<QueryResult<T>>(
+  const result = state<AsyncResult<T>>(
     initial !== undefined
       ? { status: "success", data: initial }
       : { status: "idle" }
@@ -148,6 +148,74 @@ export function query<T>({
     },
     invalidate() {
       setTimeout(() => fetcher(), 0);
+    },
+  };
+}
+
+type AsyncArgs<T> = {
+  /**
+   * The function to produce a promise.
+   */
+  fn: () => Promise<T>;
+
+  /**
+   * The initial data of the resolve promise if any
+   */
+  initial?: T;
+
+  /**
+   * Other state to track
+   */
+  track?: State<any>;
+};
+
+export function promise<T>({
+  fn,
+  initial,
+  track,
+}: AsyncArgs<T>): State<AsyncResult<T>> {
+  const result = state<AsyncResult<T>>(
+    initial === undefined
+      ? { status: "idle" }
+      : { status: "success", data: initial }
+  );
+  const refs = {
+    last: Date.now(),
+    untrack: () => {},
+  };
+
+  const evaluate = async () => {
+    const timestamp = Date.now();
+    result.current = { status: "loading" };
+    try {
+      const data = await fn();
+      if (refs.last > timestamp) {
+        return;
+      }
+      result.current = { status: "success", data };
+      refs.last = timestamp;
+    } catch (e: unknown) {
+      result.current = { status: "error", error: e };
+    }
+  };
+
+  if (track) {
+    refs.untrack = track.subscribe(() => evaluate());
+  } else {
+    setTimeout(() => evaluate(), 0);
+  }
+
+  return {
+    __kind: "state",
+    get current() {
+      return result.current;
+    },
+    subscribe(listener) {
+      const unsub = result.subscribe(listener);
+      return () => {
+        unsub();
+        refs.untrack();
+      };
     },
   };
 }
