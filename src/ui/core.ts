@@ -175,3 +175,118 @@ export function create<K extends keyof HTMLElementTagNameMap>(
   apply(elem, props);
   return elem;
 }
+
+/**
+ * Applies properties to a DOM element.
+ * @param elem The component.
+ * @param props The properties.
+ */
+export function inject(
+  elem: Element,
+  { classes, style, c: children, on, attr }: BaseProps
+) {
+  const unsubs = [] as (() => void)[];
+  if (classes !== undefined) {
+    const unsub = into(classes, (classes) => {
+      elem.className = "";
+      if (typeof classes === "string") {
+        elem.className = classes;
+      } else {
+        elem.className = classes.join(" ");
+      }
+    });
+    unsubs.push(unsub);
+  }
+
+  if ("style" in elem && style !== undefined) {
+    if (isstate(style)) {
+      const unsub = style.subscribe((style) => {
+        (elem.style as CSSStyleDeclaration).cssText = "";
+        Object.entries(style).forEach(([key, value]) => {
+          if (value === undefined || value === null) {
+            return;
+          }
+          (elem.style as CSSStyleDeclaration)[key as any] = value as string;
+        });
+      });
+      unsubs.push(unsub);
+    } else {
+      Object.entries(style).forEach(([key, value]) => {
+        (elem.style as CSSStyleDeclaration).cssText = "";
+        const unsub = into(value, (value) => {
+          if (value === undefined || value === null) {
+            return;
+          }
+          (elem.style as CSSStyleDeclaration)[key as any] = value as string;
+        });
+        unsubs.push(unsub);
+      });
+    }
+  }
+
+  if (children !== undefined) {
+    const unsub = into(children, (children) => {
+      elem.innerHTML = "";
+      (Array.isArray(children) ? children : [children])
+        .map((child) =>
+          typeof child === "string" ? document.createTextNode(child) : child
+        )
+        .forEach((child) => elem.appendChild(child));
+    });
+    unsubs.push(unsub);
+  }
+
+  if (attr !== undefined) {
+    if (isstate(attr)) {
+      const unsub = attr.subscribe((attr) => {
+        Object.entries(attr).forEach(([key, value]) => {
+          elem.removeAttribute(key);
+          if (value === undefined) {
+            return;
+          }
+          if (key in elem) {
+            (elem as any)[key] = value;
+            return;
+          }
+          elem.setAttribute(key, value);
+        });
+      });
+      unsubs.push(unsub);
+    } else {
+      Object.entries(attr).forEach(([key, value]) => {
+        const unsub = into(value, (value) => {
+          elem.removeAttribute(key);
+          if (value === undefined) {
+            return;
+          }
+          if (key in elem) {
+            (elem as any)[key] = value;
+            return;
+          }
+          elem.setAttribute(key, value);
+        });
+        unsubs.push(unsub);
+      });
+    }
+  }
+
+  if (on !== undefined) {
+    Object.entries(on).forEach(([key, value]) =>
+      elem.addEventListener(key, value as EventListener)
+    );
+  }
+
+  window.addEventListener("beforeunload", () => {
+    unsubs.forEach((unsub) => unsub());
+  });
+}
+
+export function make(
+  __type: string,
+  namespace: string,
+  props: BaseProps
+): Element {
+  const elem = document.createElementNS(namespace, __type);
+  inject(elem, props);
+  return elem;
+}
