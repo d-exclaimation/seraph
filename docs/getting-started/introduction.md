@@ -68,6 +68,8 @@ This will install **Seraph** as an npm dependency (with Typescript declarations)
 You can try a live demo of Seraph in the [Seraph Playground](https://seraph-playground.netlify.app/).
 The playground is a simple example of using Seraph's state management and client side routing.
 
+You can also grab the Seraph's states using the `window.__PLAYGROUND__` variable in the console.
+
 ## The Why
 
 Developing a web application require a good amount of interativity, and the most common way to achieve this is by using a front-end framework. However some of the most popular frameworks are not exactly lightweight, and can be quite a hassle to set up especially if used with another server-side frameworks. Most of the time, you'll need to set up a build step, install a bunch of dependencies, and configure a bunch of things especially if you're already using a server-side framework. 
