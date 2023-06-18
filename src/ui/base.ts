@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { create } from "./core";
+import { create, make } from "./core";
 import { mount, render } from "./dom";
 
 type HTMLComponents = {
@@ -33,6 +33,41 @@ type HTMLComponents = {
 export const html = new Proxy({} as HTMLComponents, {
   get<K extends keyof HTMLElementTagNameMap>(_: {}, type: K) {
     return (props: Parameters<typeof create>[1]) => create(type, props);
+  },
+});
+
+type SVGComponents = {
+  [K in keyof SVGElementTagNameMap]: (
+    props: Parameters<typeof create>[1]
+  ) => SVGElementTagNameMap[K];
+};
+
+/**
+ * Seraph style built-in SVG components.
+ * @example
+ * ```ts
+ * import { svg } from "seraph";
+ *
+ * const App = sr.svg({
+ *  c: [
+ *    svg.circle({
+ *        attr: {
+ *        cx: 50,
+ *        cy: 50,
+ *        r: 40,
+ *        stroke: "green",
+ *        "stroke-width": 4,
+ *        fill: "yellow",
+ *      }
+ *    }),
+ *  ],
+ * });
+ * ```
+ */
+export const svg = new Proxy({} as SVGComponents, {
+  get<K extends keyof SVGElementTagNameMap>(_: {}, type: K) {
+    return (props: Parameters<typeof create>[1]) =>
+      make(type, "http://www.w3.org/2000/svg", props);
   },
 });
 

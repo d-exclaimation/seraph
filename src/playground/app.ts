@@ -1,6 +1,7 @@
 import { component, html } from "@lib/core";
 import { route } from "@lib/router";
 import { router } from "./_context";
+import Featureflag from "./components/feature-flag";
 import NotFound from "./pages/404";
 import Counter from "./pages/counter";
 import Dashboard from "./pages/dashboard";
@@ -49,6 +50,8 @@ export default component(() =>
         classes: "flex flex-col items-center justify-center w-full h-full",
         c: $outlet,
       }),
+
+      Featureflag.view({}),
     ],
   })
 );

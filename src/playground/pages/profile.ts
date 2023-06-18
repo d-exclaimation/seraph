@@ -1,4 +1,5 @@
-import { component, from, html, state, type State } from "@lib/core";
+import { component, from, html, type State } from "@lib/core";
+import { $analytics, $functional, $performance } from "../_context";
 
 type SwitchProps = {
   $checked: State<boolean>;
@@ -55,10 +56,6 @@ export const Setting = component<SettingProps>(
       ],
     })
 );
-
-const $analytics = state(true);
-const $functional = state(false);
-const $performance = state(false);
 
 export default component<{ username: string }>(({ username }) =>
   html.div({
