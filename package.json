@@ -48,6 +48,7 @@
     "prepublish": "vite build; tsc",
     "dev": "vite",
     "build": "vite build; tsc",
+    "build:playground": "PLAYGROUND=true vite build; echo '/*   /index.html   200' > playground/_redirects",
     "preview": "vite preview",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
