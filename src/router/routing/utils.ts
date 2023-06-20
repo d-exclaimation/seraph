@@ -66,7 +66,7 @@ export const navigate = (
  */
 export type ParamsProps<
   T extends string,
-  Result extends {} = {}
+  Result extends Record<string | symbol | number, any> = {}
 > = T extends `${infer Head}/${infer Tail}`
   ? Head extends `:${infer Param}`
     ? ParamsProps<Tail, Result & { [K in Param]: string }>
