@@ -12,8 +12,8 @@ type ToastProps = {
 export const Toast = component<ToastProps>(({ emoji, message, on, title }) =>
   html.div({
     classes: [
-      "px-4 py-3 bg-white rounded-md ring-1 ring-zinc-400/50 shadow",
-      "flex flex-row items-start justify-start gap-4 min-w-[24rem] animate-slide-up",
+      "px-4 py-3 bg-white rounded-md ring-1 ring-zinc-400/50 shadow max-w-[90vw]",
+      "flex flex-row items-start justify-start gap-4 w-[24rem] animate-slide-up",
     ],
     c: [
       html.span({

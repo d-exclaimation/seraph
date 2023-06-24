@@ -23,17 +23,17 @@ const data = Array.from({ length: 6 })
 export default component(() =>
   html.div({
     classes:
-      "rounded-lg flex justify-between items-center flex max-w-[90vw] h-[10rem] w-[28rem] gap-1 bg-white p-8 animate-fades-in",
+      "rounded-lg flex justify-between md:items-center flex-col md:flex-row max-w-[90vw] md:h-[10rem] w-[28rem] gap-1 bg-white p-8 animate-fades-in",
     c: [
       html.div({
         classes: "flex flex-col h-full items-start justify-start gap-1",
         c: [
           html.span({
-            classes: "text-xl font-bold",
+            classes: "text-lg md:text-xl font-bold",
             c: "Your activity",
           }),
           html.span({
-            classes: "text-sm font-medium text-slate-500",
+            classes: "text-xs md:text-sm font-medium text-slate-500",
             c: "The past 7 days",
           }),
 
@@ -41,11 +41,11 @@ export default component(() =>
             classes: "flex items-center justify-center mt-2 gap-1",
             c: [
               html.span({
-                classes: "text-xl font-light",
+                classes: "text-lg md:text-xl font-light",
                 c: from($count, (count) => `${count + 1000}`),
               }),
               html.span({
-                classes: "text-sm font-medium mt-1",
+                classes: "text-xs md:text-sm font-medium mt-1",
                 c: "steps",
               }),
             ],
