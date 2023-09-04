@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   if (env.PLAYGROUND) {
     return {
       build: {
-        outDir: "playground",
+        outDir: "dist-playground",
       },
       plugins: [tsconfigPaths()],
     };

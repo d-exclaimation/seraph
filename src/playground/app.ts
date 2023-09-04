@@ -5,16 +5,16 @@ import Featureflag from "./components/feature-flag";
 import NotFound from "./pages/404";
 import Counter from "./pages/counter";
 import Dashboard from "./pages/dashboard";
+import DataFetching from "./pages/data-fetching";
 import Index from "./pages/index";
 import Profile from "./pages/profile";
-import SWR from "./pages/swr";
 
 const { $outlet } = router.provider([
   route("/", Index.view),
   route("/dashboard", Dashboard.view),
   route("/counter", Counter.view),
   route("/counter/**", Counter.view),
-  route("/swr", SWR.view),
+  route("/data-fetching", DataFetching.view),
   route("/profile/:username", Profile.view),
   route("*", NotFound.view),
 ]);
