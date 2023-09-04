@@ -10,6 +10,7 @@ import {
   all,
   effect,
   mutable,
+  s,
   state,
   transition,
   zip,
@@ -265,5 +266,72 @@ describe("Transition states", () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     expect($updating.current).toEqual(false);
+  });
+});
+
+describe("Template literal states", () => {
+  const $simple1 = state(1);
+  const $simple2 = state("Chicken");
+
+  const $template = s`${"I"} have ${$simple1} ${$simple2}(s)`;
+
+  beforeEach(() => {
+    $simple1.current = 1;
+    $simple2.current = "Chicken";
+  });
+
+  it("Should have the correct typing", () => {
+    expectTypeOf($template).toEqualTypeOf<State<string>>();
+  });
+
+  it("Should start with the initial data", ({ expect }) => {
+    expect($template.current).toEqual("I have 1 Chicken(s)");
+  });
+
+  it("Should be updated when any of the states are updated", ({ expect }) => {
+    $simple1.current = 2;
+    expect($template.current).toEqual("I have 2 Chicken(s)");
+
+    $simple2.current = "Duck";
+    expect($template.current).toEqual("I have 2 Duck(s)");
+  });
+
+  it("Should emit the new state to all listeners", ({ expect }) => {
+    const templateListener = vi.fn<[Inner<typeof $template>], void>();
+
+    const unsub = $template.subscribe(templateListener);
+
+    $simple1.current = 2;
+    $simple2.current = "Duck";
+
+    expect(templateListener).toHaveBeenCalledWith("I have 2 Duck(s)");
+
+    unsub();
+  });
+
+  it("Should be subscribable with effect", ({ expect }) => {
+    const templateListener = vi.fn<[Inner<typeof $template>], void>();
+
+    const unsub = effect($template, templateListener);
+
+    $simple1.current = 2;
+    $simple2.current = "Duck";
+
+    expect(templateListener).toHaveBeenCalledWith("I have 2 Duck(s)");
+
+    unsub();
+  });
+
+  it("Should be able to unsubscribe from the state", ({ expect }) => {
+    const templateListener = vi.fn<[Inner<typeof $template>], void>();
+
+    const unsub = $template.subscribe(templateListener);
+
+    unsub();
+
+    $simple1.current = 2;
+    $simple2.current = "Duck";
+
+    expect(templateListener).toHaveBeenCalledTimes(2);
   });
 });

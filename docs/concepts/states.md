@@ -151,6 +151,35 @@ $name.current = "Jane Doe";
 console.log($user.current); // { count: 1, name: "Jane Doe" }
 ```
 
+
+### `s`
+
+
+This is a string tag template function that are useful for creating string states from multiple other states or values using the template literal syntax.
+
+Behind the scenes, it uses [`from`](#from) and [`zip`](#zip) to create a computed state from the template literal.
+
+```ts
+import { state, s } from "@d-exclaimation/seraph";
+
+const currency = "dollar";
+const $person = state("John Doe");
+const $money = state(10);
+
+const $message = s`${$person} has ${$money} ${currency}`;
+
+console.log($message.current); // "John Doe has 10 dollar"
+
+$person.current = "Jane Doe";
+
+console.log($message.current); // "Jane Doe has 10 dollar"
+
+$money.current = 20;
+
+console.log($message.current); // "Jane Doe has 20 dollar"
+```
+
+
 ### `reducer`
 
 This is a function that can be used to create a reducer state. It takes a reducer function and an initial value.

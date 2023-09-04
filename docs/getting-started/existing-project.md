@@ -61,13 +61,13 @@ You can add Seraph to your project without using npm or any other package manage
   </body>
 
   <script type="module">
-    import { state, hydrate, from } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
+    import { state, hydrate, s } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; // [!code ++]
 
     const $count = state(10);  // [!code ++]
 
     hydrate("count-number", {  // [!code ++]
       classes: "count-number",  // [!code ++]
-      c: from($count, (count) => `${count}`), // [!code ++]
+      c: s`${$count}`, // [!code ++]
     });  // [!code ++]
 
     hydrate("btn-dec", {  // [!code ++]
@@ -117,7 +117,7 @@ Let's say we want to add a feature where:
   </body>
 
   <script type="module">
-    import { state, hydrate, from } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; 
+    import { state, hydrate, s, from } from "https://cdn.skypack.dev/@d-exclaimation/seraph"; 
 
     const $count = state(10);
 
@@ -126,7 +126,7 @@ Let's say we want to add a feature where:
       style: {
         color: from($count, (count) => count % 2 === 0 ? "blue" : "green"), // [!code ++]
       },
-      c: from($count, (count) => `${count}`),
+      c: s`${$count}`,
     });
 
     hydrate("btn-dec", {

@@ -1,4 +1,4 @@
-import { component, from, html, type State } from "@lib/core";
+import { component, html, s, type State } from "@lib/core";
 import { $analytics, $functional, $performance } from "../_context";
 
 type SwitchProps = {
@@ -16,7 +16,7 @@ export const Switch = component<SwitchProps>(({ $checked }) =>
     ],
     attr: {
       type: "button",
-      "data-checked": from($checked, (v) => v.toString()),
+      "data-checked": s`${$checked}`,
     },
     c: html.span({
       classes: [

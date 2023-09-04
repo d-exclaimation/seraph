@@ -1,4 +1,4 @@
-import { component, from, html } from "@lib/core";
+import { component, from, html, s } from "@lib/core";
 import { $count } from "../_context";
 
 export const Preview = component(() =>
@@ -8,7 +8,7 @@ export const Preview = component(() =>
     c: [
       html.span({
         classes: "text-4xl font-bold",
-        c: from($count, (count) => count.toString()),
+        c: s`${$count}`,
       }),
       html.span({
         classes: "text-sm font-medium text-slate-500",

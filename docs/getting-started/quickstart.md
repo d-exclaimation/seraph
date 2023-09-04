@@ -45,7 +45,7 @@ Let's spice things up a bit by adding some interactivity to our component. We'll
 
 
 ```ts{6-20}
-import { html, component, state, from } from "@d-exclaimation/seraph"; // [!code ++]
+import { html, component, state, s } from "@d-exclaimation/seraph"; // [!code ++]
 
 const App = component(() => {
   const $count = state(0); // [!code ++]
@@ -53,7 +53,7 @@ const App = component(() => {
   return html.div({
     c: [
       html.h1({
-        c: from($count, (count) => `Counting ${count}x`) // [!code ++]
+        c: s`Counting ${$count}x` // [!code ++]
       }),
       html.button({
         c: "Click me!",
@@ -83,7 +83,7 @@ To change the state, we only need to reassign the state's `current` property. In
 We can use the `effect` function to run some code whenever the state changes. Let's add a `console.log` whenever the state changes:
 
 ```ts
-import { html, component, state, from, effect } from "@d-exclaimation/seraph"; // [!code ++]
+import { html, component, state, s, effect } from "@d-exclaimation/seraph"; // [!code ++]
 
 const App = component(() => {
   const $count = state(0); 
@@ -93,7 +93,7 @@ const App = component(() => {
   return html.div({
     c: [
       html.h1({
-        c: from($count, (count) => `Counting ${count}x`) 
+        c: s`Counting ${$count}x`
       }),
       html.button({
         c: "Click me!",
