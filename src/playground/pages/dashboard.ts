@@ -1,4 +1,4 @@
-import { component, from, html } from "@lib/core";
+import { component, from, html, s } from "@lib/core";
 import { $count } from "../_context";
 
 type ChartBarProps = {
@@ -60,10 +60,10 @@ export default component(() =>
             classes:
               "bg-emerald-300 rounded w-[32px] max-h-[80px] animate-inc-height",
             attr: {
-              height: from($count, (count) => `${count}px`),
+              height: s`${$count}px`,
             },
             style: {
-              height: from($count, (count) => `${count}px`),
+              height: s`${$count}px`,
             },
           }),
           ...data.map((height) => ChartBar.view({ height })),

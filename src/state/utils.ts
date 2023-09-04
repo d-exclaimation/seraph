@@ -5,7 +5,7 @@
 //  Created by d-exclaimation on 11 Apr 2023
 //
 
-import { state } from "./core";
+import { from, state } from "./core";
 import { type All, type State, type Zipped } from "./types";
 
 /**
@@ -163,4 +163,32 @@ export function derive<T, K>(
       return state.subscribe(() => fn(proxy.get(state.current)));
     },
   };
+}
+
+/**
+ * Creates a string state object using a template literal syntax.
+ *
+ * @param strings The template strings.
+ * @param args The state objects or regular values to interpolate.
+ * @returns The string state object.
+ */
+export function s<Args extends (State<any> | any)[]>(
+  strings: TemplateStringsArray,
+  ...args: Args
+) {
+  const states = args.filter(isstate);
+  const combined = zip(...states) as State<any[]>;
+
+  return from(combined, () =>
+    strings.reduce((acc, curr, i) => {
+      if (i >= args.length) {
+        return acc + curr;
+      }
+      const arg = args[i];
+      if (isstate(arg)) {
+        return acc + curr + `${arg.current}`;
+      }
+      return acc + curr + `${arg}`;
+    }, "")
+  );
 }
