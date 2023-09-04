@@ -8,7 +8,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, it } from "vitest";
-import { load, resource } from "../../src/export";
+import { props, resource } from "../../src/export";
 
 describe("Load SSR props", () => {
   afterEach(() => {
@@ -20,7 +20,7 @@ describe("Load SSR props", () => {
       <div id="target" sr-props='{"a": 1, "b": 2}'></div>
     `;
 
-    const $a = load<{ a: number; b: number }>("target");
+    const $a = props<{ a: number; b: number }>("target");
     expect($a.current).toEqual({ a: 1, b: 2 });
   });
 
@@ -29,7 +29,7 @@ describe("Load SSR props", () => {
       <div id="target"></div>
     `;
 
-    const $a = load<{}>("target");
+    const $a = props<{}>("target");
     expect($a.current).toEqual({});
   });
 });
