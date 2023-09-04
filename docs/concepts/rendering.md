@@ -30,13 +30,11 @@ You can do a simple mounting where a component will just be appended to the targ
 ```ts
 import { html, mount } from "@d-exclaimation/seraph";
 
-const App = () => {
-  return html.h1({
-    c: "Hello World!"
-  });
-};
+const App = html.h1({
+  c: "Hello World!"
+});
 
-mount(App(), document.getElementById("app")!);
+mount(App, document.getElementById("app")!);
 ```
 
 This can be useful if you are integrating Seraph into an existing application and does not want to replace the entire element.
@@ -48,53 +46,114 @@ You can also do a full rendering where the target element inner content will be 
 ```ts
 import { html, render } from "@d-exclaimation/seraph";
 
-const App = () => {
-  return html.h1({
-    c: "Hello World!"
-  });
-};
+const App = html.h1({
+  c: "Hello World!"
+});
 
-render(App(), document.getElementById("app")!);
+render(App, document.getElementById("app")!);
 ```
 
 ## Rendering with loaded data
 
 Seraph also comes with a utility to fetch data from a DOM element. This is useful to be used with a server-side rendered application where the server might load some data and pass it to the client.
 
-### `load`
+### `props`
 
-To load data from a DOM element's `sr-props`, you need to explicitly call the `load` function.
+To load properties from a DOM element's `sr-props`, you need to explicitly call the `props` function.
+
+This is useful if you want to load some initial properties data from the server and use it to hydrate the component.
 
 ```html
-<div id="count-data" sr-props='{ "count": 10 }'></div>
+<div id="counter" sr-props='{ "count": 10 }'> // [!code ++]
+  <h1>Count: 10</h1>
+  <button>+1</button>
+</div>
 ```
 
 ```ts
-import { load, html, use } from "@d-exclaimation/seraph";
+import { props, html, hydrate, s, derive } from "@d-exclaimation/seraph";
 
-const $props = load<{ count: number }>('count-data');
+const $props = props<{ count: number }>("counter"); // [!code ++]
 
-const App = () => {
-  return html.h1(
-    use($props, ({ count }) => ({ c: `Count: ${count}`}))
-  );
-};
+const $count = derive($props, {
+  get: ({ count }) => count,
+  set: (count, props) => ({ ...props, count })
+});
+
+hydrate("counter", {
+  c: [
+    html.h1({
+      c: s`Count: ${$count}`
+    }),
+    html.button({
+      c: "+1",
+      on: {
+        click: () => $count.current++
+      }
+    })
+  ]
+});
 ```
 
 ### `resource`
 
 Loaded data may instead be stored a json script element. In this case, you can use the `resource` function to load the data.
 
+This may be useful if you are using a server-side rendering framework that does not support custom attributes, when the data is too large to be stored in a custom attribute, or when you want to use the data in multiple components.
+
 ```html
-<script id="count-data" type="application/json">
-  { "count": 10 }
-</script>
+<script id="server-data" type="application/json"> // [!code ++]
+  {                                               // [!code ++]
+    "count": 10,                                  // [!code ++]
+    "item": ["apple", "apples"]                   // [!code ++]
+  }                                               // [!code ++]
+</script>                                         // [!code ++]
+
+<div id="message">
+  <span>Purchasing 10 apples</span>
+</div>
+
+<div id="counter">
+  <h1>Count: 10</h1>
+  <button>+1</button>
+</div>
 ```
 
 ```ts
-import { resource } from "@d-exclaimation/seraph";
+import { resource, html, hydrate, derive, from, s } from "@d-exclaimation/seraph";
 
-const $props = resource<{ count: number }>('count-data');
+type Data = {
+  count: number;
+  item: [string, string];
+};
+
+const $data = resource<Data>("server-data"); // [!code ++]
+
+const [item, items] = $data.current.item;
+const $count = derive($data, {
+  get: ({ count }) => count,
+  set: (count, data) => ({ ...data, count })
+});
+const $item = from($count, (count) => count <= 0 ? item : items);
+
+hydrate("message", {
+  c: s`Purchasing ${$count} ${$item}`
+});
+
+
+hydrate("counter", {
+  c: [
+    html.h1({
+      c: s`Count: ${$count}`
+    }),
+    html.button({
+      c: "+1",
+      on: {
+        click: () => $count.current++
+      }
+    })
+  ]
+});
 ```
 
 ### Selective hydration / Island based client hydration
@@ -103,7 +162,7 @@ Seraph's rendering is not limited to the root element. You can also just hydrate
 
 In many scenarios involving some server-side rendering, you might want to grab server loaded data and hydrate only the parts of the page that needs to be interactive.  This is called selective hydration or island based client hydration.
 
-You can combine `load` / `resouce` and `hydrate` to perform selective hydration given an some initial server loaded data.
+You can combine `props` / `resouce` and `hydrate` to perform selective hydration given an some initial server loaded data.
 
 ```html
 <body>

@@ -121,12 +121,12 @@ You can also use existing DOM elements as components using `hydrate`. This is us
 ```
 
 ```ts
-import { state, hydrate, use } from "@d-exclaimation/seraph";
+import { state, hydrate } from "@d-exclaimation/seraph";
 
 const $state = state("Hello world!");
 
 hydrate("tag", {
-  c: state
+  c: $state
 });
 
 setTimeout(() => {
@@ -248,7 +248,7 @@ Any state can be bound to components' properties. This means that whenever the s
 
 
 ```ts
-import { html, state, component } from "@d-exclaimation/seraph";
+import { html, state, component, s } from "@d-exclaimation/seraph";
 
 const App = component(() => {
   const $count = state(0);
@@ -256,7 +256,7 @@ const App = component(() => {
   return html.div({
     c: [
       html.h1({
-        c: from($count, (count) => `Count: ${count}`); // [!code ++]
+        c: s`Count: ${$count}` // [!code ++]
       }),
       html.button({
         c: "Click me!",
@@ -271,14 +271,14 @@ const App = component(() => {
 });
 ```
 
-Individual properties may takes different types of states or may even take multiple states. Take advantage of `from`, `memo`, and `derive` to create a state that matches the required types.
+Individual properties may takes different types of states or may even take multiple states. Take advantage of `from`, `memo`, `derive`, and `s` to create a state that matches the required types.
 
 ::: details State binding performs surgical updates 
 
 Only the properties that are bound to a state will be updated. This means that if you have a component with 100 properties, but only 1 property is bound to a state, only that 1 property will be updated, this also meant any other components that are not bound to a state will not be re-rendered, improving performance.
 
 ```ts
-import { html, state, component } from "@d-exclaimation/seraph";
+import { html, state, component, s } from "@d-exclaimation/seraph";
 
 const App = component(() => {
   const $count = state(0);
@@ -292,7 +292,7 @@ const App = component(() => {
         classes: "text-2xl",
 
         // and only the child prop will be updated
-        c: from($count, (count) => `Count: ${count}`); // [!code ++]
+        c: s`Count: ${$count}` // [!code ++]
       }),
 
       // This component will not be updated

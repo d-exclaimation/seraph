@@ -13,7 +13,7 @@ import { state, type State } from "../state";
  * @param parser The parser function.
  * @returns The props as a state.
  */
-export function load<P>(
+export function props<P>(
   id: string,
   parser: (value: string) => P = JSON.parse
 ): State<P> {
