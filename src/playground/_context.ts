@@ -1,3 +1,4 @@
+import { swr } from "@/swr";
 import { state } from "@lib/core";
 import { routing } from "@lib/router";
 
@@ -6,6 +7,9 @@ export const $analytics = state(true);
 export const $functional = state(false);
 export const $performance = state(false);
 export const router = routing.browser();
+export const client = swr({
+  cache: () => new Map(),
+});
 
 declare global {
   interface Window {

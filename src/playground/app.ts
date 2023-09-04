@@ -7,12 +7,14 @@ import Counter from "./pages/counter";
 import Dashboard from "./pages/dashboard";
 import Index from "./pages/index";
 import Profile from "./pages/profile";
+import SWR from "./pages/swr";
 
 const { $outlet } = router.provider([
   route("/", Index.view),
   route("/dashboard", Dashboard.view),
   route("/counter", Counter.view),
   route("/counter/**", Counter.view),
+  route("/swr", SWR.view),
   route("/profile/:username", Profile.view),
   route("*", NotFound.view),
 ]);
@@ -42,6 +44,12 @@ export default component(() =>
               "flex-shrink-0 px-3 py-2 text-zinc-800 hover:underline transition-all",
             c: "Counter",
             href: "/counter",
+          }),
+          router.link({
+            classes:
+              "flex-shrink-0 px-3 py-2 text-zinc-800 hover:underline transition-all",
+            c: "SWR",
+            href: "/swr",
           }),
         ],
       }),
